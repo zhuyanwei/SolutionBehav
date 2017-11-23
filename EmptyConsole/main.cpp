@@ -2,11 +2,17 @@
 #include <iostream>
 #include <cstdio>
 
-#include "ViBe_BGS.h"
 #include "DiffTwo.h"
 #include "DiffTwo2.h"
 #include "DiffThree.h"
 #include "DiffThree2.h"
+#include "BackAver.h"
+#include "BackAver2.h"
+#include "BackAver3.h"
+#include "BackAver4.h"
+#include "BackAver5.h"
+
+#include "ViBe_BGS.h"
 
 int playFile();
 
@@ -23,8 +29,22 @@ int main()
 	//DiffThree d3;
 	//d3.script("MySrc/lobby.avi");
 
-	DiffThree2 d32;
-	d32.script("MySrc/sample.avi");
+	//DiffThree2 d32;
+	//d32.script("MySrc/sample.avi");
+
+	//BackAver ba1;
+	//ba1.funMain();
+
+	//BackAver2 ba2;
+
+	//BackAver3 ba3;
+	//ba3.funMain("MySrc/curtain.avi");
+
+	//BackAver4 ba4;
+	//ba4.funMain("MySrc/lobby.avi");
+
+	BackAver5 ba5;
+	ba5.funMain("MySrc/sample.avi");
 
 	//ViBe_BGS v1;
 	//v1.script("MySrc/lobby.avi");
