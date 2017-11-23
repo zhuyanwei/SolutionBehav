@@ -2,15 +2,11 @@
 #include <iostream>
 #include "ViBe_BGS.h"
 
-using namespace std;
-using namespace cv;
-
 int c_xoff[9] = { -1, 0, 1, -1, 1, -1, 0, 1, 0 };  //x的邻居点
 int c_yoff[9] = { -1, 0, 1, -1, 1, -1, 0, 1, 0 };  //y的邻居点
 
 ViBe_BGS::ViBe_BGS(void)
 {
-
 }
 ViBe_BGS::~ViBe_BGS(void)
 {
@@ -141,4 +137,48 @@ void ViBe_BGS::testAndUpdate(const Mat _image)
 			}
 		}
 	}
+}
+
+int ViBe_BGS::script(string fileName)
+{
+	Mat frame, gray, mask;
+	VideoCapture capture;
+	capture.open(fileName);
+
+	if (!capture.isOpened())
+	{
+		cout << "No camera or video input!\n" << endl;
+		return -1;
+	}
+
+	ViBe_BGS Vibe_Bgs;
+	int count = 0;
+
+	while (true)
+	{
+		count++;
+		capture >> frame;
+		if (frame.empty())
+			continue;
+		cvtColor(frame, gray, CV_RGB2GRAY);
+
+		if (count == 1)
+		{
+			Vibe_Bgs.init(gray);
+			Vibe_Bgs.processFirstFrame(gray);
+			cout << " Training GMM complete!" << endl;
+		}
+		else
+		{
+			Vibe_Bgs.testAndUpdate(gray);
+			mask = Vibe_Bgs.getMask();
+			morphologyEx(mask, mask, MORPH_OPEN, Mat());
+			imshow("mask", mask);
+		}
+
+		imshow("input", frame);
+		waitKey(30);
+	}
+
+	return 1;
 }

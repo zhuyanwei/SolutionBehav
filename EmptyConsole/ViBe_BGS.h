@@ -1,4 +1,5 @@
 #pragma once
+
 #include <iostream>
 #include "opencv2/opencv.hpp"
 
@@ -21,6 +22,8 @@ public:
 	void processFirstFrame(const Mat _image);
 	void testAndUpdate(const Mat _image);  //¸üÐÂ
 	Mat getMask(void){ return m_mask; };
+
+	int script(string fileName);
 
 private:
 	Mat m_samples[NUM_SAMPLES];
