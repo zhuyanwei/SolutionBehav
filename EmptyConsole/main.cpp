@@ -4,6 +4,9 @@
 
 #include "ViBe_BGS.h"
 #include "DiffTwo.h"
+#include "DiffTwo2.h"
+#include "DiffThree.h"
+#include "DiffThree2.h"
 
 int playFile();
 
@@ -11,8 +14,17 @@ int main()
 {
 	//playFile();
 
-	DiffTwo d1;
-	d1.funMain("MySrc/lobby.avi");
+	//DiffTwo d1;
+	//d1.funMain("MySrc/lobby.avi");
+
+	//DiffTwo2 d22;
+	//d22.script("MySrc/sample.avi");
+
+	//DiffThree d3;
+	//d3.script("MySrc/lobby.avi");
+
+	DiffThree2 d32;
+	d32.script("MySrc/sample.avi");
 
 	//ViBe_BGS v1;
 	//v1.script("MySrc/lobby.avi");
