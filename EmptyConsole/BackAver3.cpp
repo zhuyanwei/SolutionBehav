@@ -28,7 +28,7 @@ int BackAver3::funMain(string fileName)
 	{
 		cvAcc(Img, img_sum);
 		Img = cvQueryFrame(capture);
-		cvWaitKey(100);
+		cvWaitKey(30);
 		cvShowImage("ԭͼ", Img);
 		//printf(".");
 	}
@@ -37,8 +37,8 @@ int BackAver3::funMain(string fileName)
 
 	cvNamedWindow("img_sum_gray", 0);
 	cvShowImage("img_sum_gray", img_sum_gray);
-	cvSaveImage("model.jpg", img_sum_gray);
-	cvWaitKey(0);
+	//cvSaveImage("model.jpg", img_sum_gray);
+	cvWaitKey(30);
 
 	cvDestroyAllWindows();
 	cvReleaseImage(&img_sum);

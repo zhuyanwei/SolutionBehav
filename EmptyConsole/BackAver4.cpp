@@ -10,9 +10,21 @@ BackAver4::~BackAver4()
 
 int BackAver4::funMain(string fileName)
 {
-	char* myChar = const_cast<char*>(fileName.c_str());
-	CvCapture *capture = cvCreateFileCapture(myChar);
+	//char* myChar = const_cast<char*>(fileName.c_str());
+	//CvCapture* capture = cvCreateFileCapture(myChar);
+	CvCapture* capture = cvCreateCameraCapture(0);
+	if (!capture)
+	{
+		printf("Couldn't Open the file.");
+		return -1;
+	}
 	IplImage *myImg = cvQueryFrame(capture);
+	while (myImg == NULL)
+	{
+		cvWaitKey(30);
+		myImg = cvQueryFrame(capture);
+	}
+
 	CvSize img_sz = cvGetSize(myImg);
 	IplImage *pic;
 	IplImage *frame = cvCreateImage(img_sz, 8, 1);
@@ -42,6 +54,7 @@ int BackAver4::funMain(string fileName)
 		cvAbsDiff(Iscratch, IpreF, Iscratch2);
 		cvAcc(Iscratch2, IdiffF);
 		cvCopy(Iscratch, IpreF);
+		cout << fnum << '\n';
 		fnum++;
 	}
 	cvConvertScale(IavgF, IavgF, (double)(1.0 / (Icount)));   /*¾ùÖµ*/
@@ -50,7 +63,7 @@ int BackAver4::funMain(string fileName)
 	cvConvertScale(IdiffF, Iscratch, ht); /*high threshold = low threshold*/
 	cvAdd(IdiffF, IavgF, IhiF);
 	cvSub(IavgF, Iscratch, IlowF);
-
+	cout << "background done" << '\n';
 	while (true)
 	{
 		pic = cvQueryFrame(capture);
@@ -66,7 +79,8 @@ int BackAver4::funMain(string fileName)
 		cvShowImage("mask", Imask);
 		cvNamedWindow("frame");
 		cvShowImage("frame", frame);
-		cvWaitKey(33);
+		if (cvWaitKey(30) == 'q')
+			break;
 	}
 	return 1;
 }

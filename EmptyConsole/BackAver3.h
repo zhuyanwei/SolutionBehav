@@ -1,3 +1,4 @@
+//useless
 // background average ,-->how to accumulate a video file
 #pragma once
 #include <opencv2\opencv.hpp>

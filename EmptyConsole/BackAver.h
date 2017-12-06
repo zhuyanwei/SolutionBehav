@@ -1,3 +1,5 @@
+//para:filename;number of sum;low thread;high thread
+//c-type;camera;low high thread;
 #pragma once
 #include <opencv2\opencv.hpp>
 #include <iostream>
@@ -35,7 +37,5 @@ private:
 	void createModelsfromStats();
 	void backgroundDiff(IplImage* I);
 	void DeallocateImages();
-
-
 };
 

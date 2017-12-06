@@ -11,16 +11,18 @@ BackAver::~BackAver()
 int BackAver::funMain()
 {
 	CvCapture* capture = cvCreateCameraCapture(0);	//初始化从摄像机中获取视频
+	//@J,judge if thera is a camera
 	if (!capture)
 	{
 		printf("Couldn't Open the file.");
 		return -1;
 	}
 	cvNamedWindow("raw");
-	cvNamedWindow("avg");
+	cvNamedWindow("result");
 
 	IplImage* rawImage = cvQueryFrame(capture);		//这个函数仅仅是函数cvGrabFrame和函数cvRetrieveFrame在一起调用的组合
 	cvShowImage("raw", rawImage);					//显示第一帧图像
+	//@J,wait for camera to init
 	while (rawImage == NULL)
 	{
 		cvWaitKey(30);
@@ -32,15 +34,17 @@ int BackAver::funMain()
 	{
 		if (i <= 30)
 		{
+			cout << i<<'\n';
 			accumulateBackground(rawImage);		//前30帧用于累积计算背景图像	
 			if (i == 30)								//将前30帧转换成一个背景统计模型	
 				createModelsfromStats();
 		}
 		else
 			backgroundDiff(rawImage);				//建立好背景模型后调用此函数进行图像分割
-		cvShowImage("avg", Imask);					//播放分割后的目标图像结果
+		
+		cvShowImage("result", Imask);					//播放分割后的目标图像结果
 
-		if (cvWaitKey(33) == 27)						//每33ms 播放一帧		
+		if (cvWaitKey(30) == 'q')						//每33ms 播放一帧		
 			break;
 		if (!(rawImage = cvQueryFrame(capture)))
 			break;
@@ -93,7 +97,7 @@ void BackAver::AllocateImages(IplImage* I)
 	Imask = cvCreateImage(sz, IPL_DEPTH_8U, 1);
 }
 
-
+//@J,calcu both addsum and diffs,to $IavgF and $IdiffF
 /*累积背景图像和前后帧图像差值的绝对值，当累积够一定数量后就将其转换成一个背景统计模型*/
 void BackAver::accumulateBackground(IplImage* I)
 {
@@ -107,12 +111,11 @@ void BackAver::accumulateBackground(IplImage* I)
 		cvAcc(Iscratch2, IdiffF);					//将前后帧差值图像累加到IdiffF中	
 		Icount += 1.0;								//记录累加的次数用于背景统计时计算均值		
 	}
-	first = 0;										//first为局部静态变量,，以后调用该函数将不再初始化为1，
-	//意思就是除了第一次，以后调用该函数均进入if语句
+	first = 0;										//first为局部静态变量,，以后调用该函数将不再初始化为1，意思就是除了第一次，以后调用该函数均进入if语句
 	cvCopy(Iscratch, IprevF);						//IprevF用来保存前一帧图像
 }
 
-
+//@J,IhiF = IavgF + IdiffF * scale
 /*设置高阈值*/
 void BackAver::setHighThreshold(float scale)
 {
@@ -121,14 +124,13 @@ void BackAver::setHighThreshold(float scale)
 	cvSplit(IhiF, Ihi1, Ihi2, Ihi3, 0);			//将阀值上限分割为多通道	
 }
 
-
+//@J,IlowF = IavgF - IdiffF * scale
 /*设置低阈值*/
 void BackAver::setLowThreshold(float scale)
 {
 	cvConvertScale(IdiffF, Iscratch, scale);		//Iscratch = IdiffF*scale
 	cvSub(IavgF, Iscratch, IlowF);				//IlowF = IavgF - Iscratch
 	cvSplit(IlowF, Ilow1, Ilow2, Ilow3, 0);		//将阀值下限分割为多通道
-
 }
 
 /*当累积足够多的帧图后,就将其转化成一个背景统计模型，该函数用于计算每个像素的均值和平均绝对差分*/
@@ -139,6 +141,7 @@ void BackAver::createModelsfromStats()
 	cvAddS(IdiffF, cvScalar(1.0, 1.0, 1.0), IdiffF);		//使得到的绝对差分图像每个像素值均不为空，故每个像素加上1
 	setHighThreshold(7.0);									//根据统计的背景模型设定一个阀值上限和下限	
 	setLowThreshold(6.0);									//如果 IlowF<=Temp<IhiF 时认为其为背景,否则为视频中出现的运动目标物体	
+	cout << "background done";
 }
 
 void BackAver::backgroundDiff(IplImage* I)

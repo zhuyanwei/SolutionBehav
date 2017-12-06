@@ -1,3 +1,4 @@
+//useless
 // background average ,using cvOr
 #pragma once
 #include <opencv2\opencv.hpp>
@@ -34,6 +35,5 @@ private:
 	void createModelsfromStats();
 	void backgroundDiff(IplImage* I);
 	void DeallocateImage();
-
 };
 

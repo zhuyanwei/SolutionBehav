@@ -1,4 +1,6 @@
-//another background average 
+//useless;
+//c-type;
+//another background average ,similar to $BackAver,add function multi camera
 //http://www.cnblogs.com/tornadomeet/archive/2012/04/08/2438158.html
 #pragma once
 #include <opencv2\opencv.hpp>
@@ -10,7 +12,7 @@ using namespace cv;
 #define NUM_CAMERAS   1              //This function can handle an array of cameras
 #define HIGH_SCALE_NUM 7.0            //How many average differences from average image on the high side == background
 #define LOW_SCALE_NUM 6.0        //How many average differences from average image on the low side == background
-#define cvCvtPixToPlane //cvSplit,且cvSplit是将一个多通道矩阵转换为几个单通道矩阵
+#define cvCvtPixToPlane			//cvSplit,且cvSplit是将一个多通道矩阵转换为几个单通道矩阵
 
 class BackAver2
 {

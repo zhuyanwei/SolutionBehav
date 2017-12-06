@@ -7,8 +7,6 @@
 #include "DiffThree.h"
 #include "DiffThree2.h"
 #include "BackAver.h"
-#include "BackAver2.h"
-#include "BackAver3.h"
 #include "BackAver4.h"
 #include "BackAver5.h"
 #include "ViBe_BGS.h"
@@ -19,10 +17,12 @@
 #include "FlowLKVideo.h"
 
 int playFile();
+int test();
 
 int main()
 {
 	//playFile();
+	//test();
 
 	//DiffTwo d1;
 	//d1.funMain("MySrc/lobby.avi");
@@ -39,13 +39,8 @@ int main()
 	//BackAver ba1;
 	//ba1.funMain();
 
-	//BackAver2 ba2;
-
-	//BackAver3 ba3;
-	//ba3.funMain("MySrc/curtain.avi");
-
-	//BackAver4 ba4;
-	//ba4.funMain("MySrc/lobby.avi");
+	BackAver4 ba4;
+	ba4.funMain("MySrc/sample.avi");
 
 	//BackAver5 ba5;
 	//ba5.funMain("MySrc/sample.avi");
@@ -87,5 +82,19 @@ int playFile()
 		imshow("File", frame);
 		waitKey(30);
 	}
+	return 1;
+}
+
+int test()
+{
+	Mat m1;
+	m1 = imread("MySrc/lena.jpg");
+	imshow("test", m1);
+	if (waitKey(10000) == 'q')
+	{
+		cout << "button";
+		return 0;
+	}
+	cout << "no button";
 	return 1;
 }
