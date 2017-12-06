@@ -1,7 +1,7 @@
 #include "opencv2/opencv.hpp"
 #include <iostream>
 #include <cstdio>
-
+//background substract
 #include "DiffTwo.h"
 #include "DiffTwo2.h"
 #include "DiffThree.h"
@@ -11,8 +11,12 @@
 #include "BackAver3.h"
 #include "BackAver4.h"
 #include "BackAver5.h"
-
 #include "ViBe_BGS.h"
+//optical flow
+#include "FlowColor.h"
+#include "FlowImg.h"
+#include "FlowLKImg.h"
+#include "FlowLKVideo.h"
 
 int playFile();
 
@@ -43,11 +47,24 @@ int main()
 	//BackAver4 ba4;
 	//ba4.funMain("MySrc/lobby.avi");
 
-	BackAver5 ba5;
-	ba5.funMain("MySrc/sample.avi");
+	//BackAver5 ba5;
+	//ba5.funMain("MySrc/sample.avi");
 
 	//ViBe_BGS v1;
 	//v1.script("MySrc/lobby.avi");
+
+	//FlowColor f1;
+	//f1.funMain();
+
+	//FlowImg f2;
+	//f2.funOne();
+
+	//FlowLKImg f3;
+	//f3.funMain();
+
+	//FlowLKVideo f4;
+	//f4.funMain();
+
 	return 0;
 }
 

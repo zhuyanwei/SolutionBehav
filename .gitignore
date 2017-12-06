@@ -5,6 +5,7 @@ Debug/
 MySrc/
 ipch/
 
+*.jpg
 *.sln
 *.sdf
 *.suo
