@@ -1,3 +1,4 @@
+//get feature;circle;
 //optical flow,differ two images
 //http://blog.csdn.net/on2way/article/details/48954159
 #pragma once

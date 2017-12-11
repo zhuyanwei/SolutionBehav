@@ -21,7 +21,7 @@ int BackAver4::funMain(string fileName)
 	IplImage *myImg = cvQueryFrame(capture);
 	while (myImg == NULL)
 	{
-		cvWaitKey(30);
+		cvWaitKey(1000);
 		myImg = cvQueryFrame(capture);
 	}
 

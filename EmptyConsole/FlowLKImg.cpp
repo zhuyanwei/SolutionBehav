@@ -60,7 +60,6 @@ int FlowLKImg::funMain()
 	float feature_errors[MAX_CORNERS];
 	CvSize pyr_sz = cvSize(imgA->width + 8, imgB->height / 3);
 
-
 	IplImage* pyrA = cvCreateImage(pyr_sz, IPL_DEPTH_32F, 1);
 	IplImage* pyrB = cvCreateImage(pyr_sz, IPL_DEPTH_32F, 1);
 	CvPoint2D32f* cornersB = new CvPoint2D32f[MAX_CORNERS];
@@ -95,18 +94,11 @@ int FlowLKImg::funMain()
 		cvLine(imgC, p0, p1, CV_RGB(255, 0, 0), 2);
 	}
 
-
 	cvNamedWindow("ImageA", 0);
 	cvNamedWindow("ImageB", 0);
 	cvNamedWindow("LKpyr_OpticalFlow", 0);
-
-
-	cvSaveImage("result_LK.jpg", imgC);
 	cvShowImage("ImageA", imgA);
-	cvSaveImage("input.jpg", imgA);
-
 	cvShowImage("ImageB", imgB);
-	cvSaveImage("input1.jpg", imgB);
 	cvShowImage("LKpyr_OpticalFlow", imgC);
 
 	cout << "done";

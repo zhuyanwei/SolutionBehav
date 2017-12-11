@@ -1,4 +1,5 @@
-//flow lk pyramid,somehow complete
+//star5
+//flow lk pyramid,somehow complex
 //http://blog.csdn.net/u014568921/article/details/46638557
 #pragma once
 #include <opencv2\opencv.hpp>

@@ -1,15 +1,12 @@
 #include "FlowLKVideo.h"
 
-
 FlowLKVideo::FlowLKVideo()
 {
 }
 
-
 FlowLKVideo::~FlowLKVideo()
 {
 }
-
 
 int FlowLKVideo::funMain()
 {

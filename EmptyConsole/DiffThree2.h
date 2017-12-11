@@ -1,3 +1,5 @@
+//star3
+//Dilates;
 //a more simple 3frame diff ,including img process
 //http://blog.csdn.net/dcrmg/article/details/52234929
 #pragma once

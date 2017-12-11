@@ -1,3 +1,6 @@
+//star5
+//para:
+//c++-type;morphologyKernel;medianBlur;counter;rect;draw;
 #pragma once
 #include <opencv2\opencv.hpp>
 #include <iostream>

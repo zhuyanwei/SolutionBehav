@@ -1,3 +1,5 @@
+//star5
+//colour space;
 //optical flow,use camera and colour space
 //http://blog.csdn.net/zouxy09/article/details/8683859
 #pragma once
@@ -13,7 +15,7 @@ class FlowColor
 public:
 	FlowColor();
 	~FlowColor();
-	int funMain();
+	int funMain(string fileName);
 private:
 	void makecolorwheel(vector<Scalar> &colorwheel);
 	void motionToColor(Mat flow, Mat &color);

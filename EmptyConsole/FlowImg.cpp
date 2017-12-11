@@ -41,8 +41,8 @@ int FlowImg::funTwo()
 	double minDis = 10;//定义最小距离
 	double qLevel = 0.01;//定义质量水平
 	//读取两个图像---相邻帧
-	I1 = imread("I1.jpg", 0);//读取为灰度图像
-	I2 = imread("I2.jpg", 0);
+	I1 = imread("MySrc/frame1.jpg", 0);//读取为灰度图像
+	I2 = imread("MySrc/frame2.jpg", 0);
 	//检测第一帧的特征点
 	goodFeaturesToTrack(I1, features, maxCout, qLevel, minDis);
 	//计算出第二帧的特征点

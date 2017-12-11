@@ -27,7 +27,7 @@ int DiffTwo2::script(string fileName)
 	while (true)
 	{
 		videoCap >> frameNow;
-		if (frameNow.empty() || waitKey(30) == 27)
+		if (frameNow.empty() || waitKey(30) == 'q')
 		{
 			break;
 		}

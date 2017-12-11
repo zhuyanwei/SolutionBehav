@@ -1,8 +1,9 @@
+//star5
+//para:
+//model;morphologyEx;
 #pragma once
-
 #include <iostream>
 #include "opencv2/opencv.hpp"
-
 using namespace cv;
 using namespace std;
 
@@ -10,7 +11,6 @@ using namespace std;
 #define MIN_MATCHES 2		//#min指数
 #define RADIUS 20		//Sqthere半径
 #define SUBSAMPLE_FACTOR 16	//子采样概率
-
 
 class ViBe_BGS
 {

@@ -31,8 +31,8 @@ int DiffThree2::script(string fileName)
 	while (true)
 	{
 		videoCap >> frameNow;
-		if (frameNow.empty() || waitKey(30) == 27)
-		//if (frameNow.empty() || waitKey(videoPause) == 27)
+		if (frameNow.empty() || waitKey(30) == 'q')
+		//if (frameNow.empty() || waitKey(videoPause) == 'q')
 		{
 			break;
 		}

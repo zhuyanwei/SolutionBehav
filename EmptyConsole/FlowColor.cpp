@@ -92,14 +92,29 @@ void FlowColor::motionToColor(Mat flow, Mat &color)
 	}
 }
 
-int FlowColor::funMain()
+int FlowColor::funMain(string fileName)
 {
 	VideoCapture cap;
-	cap.open(0);
-	//cap.open("test_02.wmv");
-
-	if (!cap.isOpened())
-		return -1;
+	if (fileName == "00")
+	{
+		cap.open(0);
+		Mat tmp00;
+		cap >> tmp00;
+		while (!tmp00.data)
+		{
+			waitKey(1000);
+			cap >> tmp00;
+		}
+	}
+	else
+	{
+		cap.open(fileName);
+		if (!cap.isOpened())
+		{
+			cout << "no file" << '\n';
+			return -1;
+		}
+	}
 
 	Mat prevgray, gray, flow, cflow, frame;
 	namedWindow("flow", 1);
@@ -109,9 +124,12 @@ int FlowColor::funMain()
 	for (;;)
 	{
 		double t = (double)cvGetTickCount();
-
 		cap >> frame;
-		cvtColor(frame, gray, CV_BGR2GRAY);
+
+		if (frame.depth() != 1)
+			cvtColor(frame, gray, CV_BGR2GRAY);
+		else
+			gray = frame.clone();
 		imshow("original", frame);
 
 		if (prevgray.data)
@@ -120,7 +138,7 @@ int FlowColor::funMain()
 			motionToColor(flow, motion2color);
 			imshow("flow", motion2color);
 		}
-		if (waitKey(10) >= 0)
+		if (waitKey(30) == 'q')
 			break;
 		std::swap(prevgray, gray);
 

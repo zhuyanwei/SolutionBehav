@@ -1,5 +1,3 @@
-#include <opencv2/opencv.hpp>
-#include <iostream>
 #include "ViBe_BGS.h"
 
 int c_xoff[9] = { -1, 0, 1, -1, 1, -1, 0, 1, 0 };  //xµÄÁÚ¾Óµã
@@ -10,7 +8,6 @@ ViBe_BGS::ViBe_BGS(void)
 }
 ViBe_BGS::~ViBe_BGS(void)
 {
-
 }
 
 /**************** Assign space and init ***************************/
@@ -24,12 +21,12 @@ void ViBe_BGS::init(const Mat _image)
 	m_foregroundMatchCount = Mat::zeros(_image.size(), CV_8UC1);
 }
 
+//@J,fill $m_samples[]
 /**************** Init model from first frame ********************/
 void ViBe_BGS::processFirstFrame(const Mat _image)
 {
 	RNG rng;
 	int row, col;
-
 	for (int i = 0; i < _image.rows; i++)
 	{
 		for (int j = 0; j < _image.cols; j++)
@@ -143,12 +140,25 @@ int ViBe_BGS::script(string fileName)
 {
 	Mat frame, gray, mask;
 	VideoCapture capture;
-	capture.open(fileName);
-
-	if (!capture.isOpened())
+	if (fileName == "00")
 	{
-		cout << "No camera or video input!\n" << endl;
-		return -1;
+		capture.open(0);
+		Mat tmp00;
+		capture >> tmp00;
+		while (!tmp00.data)
+		{
+			waitKey(1000);
+			capture >> tmp00;
+		}
+	}
+	else
+	{
+		capture.open(fileName);
+		if (!capture.isOpened())
+		{
+			cout << "no file" << '\n';
+			return -1;
+		}
 	}
 
 	ViBe_BGS Vibe_Bgs;
@@ -160,7 +170,10 @@ int ViBe_BGS::script(string fileName)
 		capture >> frame;
 		if (frame.empty())
 			continue;
-		cvtColor(frame, gray, CV_RGB2GRAY);
+		if (frame.depth() != 1)
+			cvtColor(frame, gray, CV_RGB2GRAY);
+		else
+			gray = frame.clone();
 
 		if (count == 1)
 		{
@@ -175,10 +188,9 @@ int ViBe_BGS::script(string fileName)
 			morphologyEx(mask, mask, MORPH_OPEN, Mat());
 			imshow("mask", mask);
 		}
-
 		imshow("input", frame);
-		waitKey(30);
+		if (waitKey(30) == 'q')
+			break;
 	}
-
 	return 1;
 }
