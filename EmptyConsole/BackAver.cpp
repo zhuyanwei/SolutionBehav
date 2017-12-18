@@ -8,24 +8,39 @@ BackAver::~BackAver()
 {
 }
 
-int BackAver::funMain()
+int BackAver::funMain(string fileName)
 {
-	CvCapture* capture = cvCreateCameraCapture(0);	//初始化从摄像机中获取视频
-	//@J,judge if thera is a camera
-	if (!capture)
+	CvCapture* capture;
+	if (fileName == "00")
 	{
-		printf("Couldn't Open the file.");
-		return -1;
+		capture = cvCreateCameraCapture(0);	//初始化从摄像机中获取视频
+		//@J,judge if thera is a camera
+		if (!capture)
+		{
+			printf("Couldn't Open the file.");
+			return -1;
+		}
 	}
+	else
+	{
+		char* myChar = const_cast<char*>(fileName.c_str());
+		capture = cvCreateFileCapture(myChar);
+		if (NULL == capture)
+		{
+			printf("没有找到该视频！\n");
+			return -1;
+		}
+
+	}
+
 	cvNamedWindow("raw");
 	cvNamedWindow("result");
-
 	IplImage* rawImage = cvQueryFrame(capture);		//这个函数仅仅是函数cvGrabFrame和函数cvRetrieveFrame在一起调用的组合
 	cvShowImage("raw", rawImage);					//显示第一帧图像
 	//@J,wait for camera to init
 	while (rawImage == NULL)
 	{
-		cvWaitKey(30);
+		cvWaitKey(1000);
 		rawImage = cvQueryFrame(capture);
 	}
 	AllocateImages(rawImage);						//以第一帧图像分配图像大小		

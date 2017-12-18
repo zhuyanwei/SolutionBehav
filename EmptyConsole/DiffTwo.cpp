@@ -89,22 +89,26 @@ int DiffTwo::funMain(string fileName)
 			morphologyEx(segmentation, segmentation, MORPH_CLOSE, morphologyKernel, Point(-1, -1), 2, BORDER_REPLICATE);
 			//显示二值化图片  
 			imshow("segmentation", segmentation);
-			//找边界  
-			vector< vector<Point> > contours;
-			vector<Vec4i> hierarchy;
-			findContours(segmentation, contours, hierarchy, CV_RETR_EXTERNAL, CV_CHAIN_APPROX_SIMPLE, Point(0, 0));//CV_RETR_TREE  
-			vector< vector<Point> > contours_poly(contours.size());
-			/*存储运动物体*/
-			vector<Rect> boundRect;
-			boundRect.clear();
-			//画出运动物体  
-			//对视频中出现的运动物体，进行初次的筛选  
-			for (int index = 0; index < contours.size(); index++)
-			{
-				approxPolyDP(Mat(contours[index]), contours_poly[index], 3, true);
-				Rect rect = boundingRect(Mat(contours_poly[index]));
-				rectangle(currentBGRFrame, rect, Scalar(0, 255, 255), 2);
-			}
+			//@J,sobel
+			Mat sobel1;
+			Sobel(segmentation, sobel1, CV_8U, 1, 0);
+			imshow("sobel", sobel1);
+			////找边界  
+			//vector< vector<Point> > contours;
+			//vector<Vec4i> hierarchy;
+			//findContours(segmentation, contours, hierarchy, CV_RETR_EXTERNAL, CV_CHAIN_APPROX_SIMPLE, Point(0, 0));//CV_RETR_TREE  
+			//vector< vector<Point> > contours_poly(contours.size());
+			///*存储运动物体*/
+			//vector<Rect> boundRect;
+			//boundRect.clear();
+			////画出运动物体  
+			////对视频中出现的运动物体，进行初次的筛选  
+			//for (int index = 0; index < contours.size(); index++)
+			//{
+			//	approxPolyDP(Mat(contours[index]), contours_poly[index], 3, true);
+			//	Rect rect = boundingRect(Mat(contours_poly[index]));
+			//	rectangle(currentBGRFrame, rect, Scalar(0, 255, 255), 2);
+			//}
 			//显示原视频  
 			imshow("video", currentBGRFrame);
 			//保存当前帧的灰度图  

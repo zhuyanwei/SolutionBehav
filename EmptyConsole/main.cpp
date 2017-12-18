@@ -13,7 +13,11 @@
 #include "FlowColor.h"
 #include "FlowImg.h"
 #include "FlowLKImg.h"
+#include "LKDemo.h"
+//
+#include "Link.h"
 
+//experiment script
 int playFile();
 int test();
 
@@ -23,7 +27,6 @@ int main()
 	//test();
 
 	//DiffTwo d1;
-	////d1.funMain("00");
 	//d1.funMain("MySrc/sample.avi");
 
 	//DiffTwo2 d22;
@@ -36,13 +39,13 @@ int main()
 	//d32.script("MySrc/sample.avi");
 
 	//BackAver ba1;
-	//ba1.funMain();
+	//ba1.funMain("00");
 
 	//BackAver4 ba4;
-	//ba4.funMain("MySrc/sample.avi");
+	//ba4.funMain("00");
 
-	//ViBe_BGS v1;
-	//v1.script("00");
+	ViBe_BGS v1;
+	v1.script("MySrc/sample.avi");
 
 	//FlowColor f1;
 	//f1.funMain("00");
@@ -51,8 +54,14 @@ int main()
 	////f2.funOne();
 	//f2.funTwo();
 
-	FlowLKImg f3;
-	f3.funMain();
+	//FlowLKImg f3;
+	//f3.funMain();
+
+	//LKDemo lk1;
+	//lk1.funMain("MySrc/sample.avi");
+
+	//Link l1;
+	//l1.funMain();
 
 	return 0;
 }

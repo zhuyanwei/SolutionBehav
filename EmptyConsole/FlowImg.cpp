@@ -18,11 +18,13 @@ int FlowImg::funOne()
 	double qLevel = 0.01;//定义质量水平
 
 	I1 = imread("MySrc/lena.jpg",0);//读取为灰度图像
+	cout << "info:" << I1.cols << ',' << I1.rows << '\n';
 	goodFeaturesToTrack(I1, features, maxCout, qLevel, minDis);
 	for (int i = 0; i<features.size(); i++)
 	{
 		//将特征点画一个小圆出来--粗细为2
-		circle(I1, features[i], 3, Scalar(255), 2);
+		circle(I1, features[i], 3, Scalar(255), 1);
+		cout <<i<<':'<< features[i].x << ',' << features[i].y << '\n';
 	}
 	imshow("features", I1);
 	waitKey(0);
@@ -52,8 +54,7 @@ int FlowImg::funTwo()
 	for (int i = 0; i<features_after.size(); i++)
 	{
 		//状态要是1，并且坐标要移动下的那些点
-		if (status[i] && ((abs(features[i].x - features_after[i].x) +
-			abs(features[i].y - features_after[i].y))>4))
+		if (status[i] && ((abs(features[i].x - features_after[i].x) + abs(features[i].y - features_after[i].y))>4) )
 		{
 			features_after[k++] = features_after[i];
 		}

@@ -10,12 +10,19 @@ BackAver4::~BackAver4()
 
 int BackAver4::funMain(string fileName)
 {
-	//char* myChar = const_cast<char*>(fileName.c_str());
-	//CvCapture* capture = cvCreateFileCapture(myChar);
-	CvCapture* capture = cvCreateCameraCapture(0);
+	CvCapture* capture;
+	if (fileName == "00")
+	{
+		capture = cvCreateCameraCapture(0);
+	}
+	else
+	{
+		char* myChar = const_cast<char*>(fileName.c_str());
+		capture = cvCreateFileCapture(myChar);
+	}
 	if (!capture)
 	{
-		printf("Couldn't Open the file.");
+		printf("Couldn't Open the file or camera");
 		return -1;
 	}
 	IplImage *myImg = cvQueryFrame(capture);

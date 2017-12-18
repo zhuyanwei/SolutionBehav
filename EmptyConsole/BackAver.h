@@ -11,7 +11,7 @@ class BackAver
 public:
 	BackAver();
 	~BackAver();
-	int funMain();
+	int funMain(string fileName);
 private:
 	//全局变量：我们为需要的不同临时图像和统计属性的图像创建指针
 	/*Float 3-channel images*/
