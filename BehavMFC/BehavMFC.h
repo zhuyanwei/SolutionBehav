@@ -5,7 +5,6 @@
 #endif
 
 #include "resource.h"		// Ö÷·ûºÅ
-#include <opencv2\opencv.hpp>
 
 class CBehavMFCApp : public CWinApp
 {
