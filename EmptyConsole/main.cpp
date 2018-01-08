@@ -16,6 +16,10 @@
 #include "LKDemo.h"
 //
 #include "Link.h"
+#include "BackAuto.h"
+//HgfFile
+#include "HgfFile\MatchTemplate.h"
+#include "HgfFile\Bound.h"
 
 //experiment script
 int playFile();
@@ -44,8 +48,8 @@ int main()
 	//BackAver4 ba4;
 	//ba4.funMain("00");
 
-	ViBe_BGS v1;
-	v1.script("MySrc/sample.avi");
+	//ViBe_BGS v1;
+	//v1.script("MySrc/sample.avi");
 
 	//FlowColor f1;
 	//f1.funMain("00");
@@ -62,6 +66,17 @@ int main()
 
 	//Link l1;
 	//l1.funMain();
+
+	//MatchTemplate m2;
+	//m2.funMain();
+	//int i;
+	//cin >> i;
+
+	//BackAuto ba2;
+	//ba2.funMain();
+
+	Bound bd1;
+	bd1.funMain();
 
 	return 0;
 }
