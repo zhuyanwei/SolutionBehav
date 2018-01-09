@@ -6,6 +6,8 @@
 #define IMAGE_HEIGHT 256
 #define IMAGE_CHANNELS 3
 
+using namespace cv;
+using namespace std;
 class CBehavMFCDlg : public CDialogEx
 {
 public:
@@ -21,9 +23,21 @@ protected:
 	afx_msg HCURSOR OnQueryDragIcon();
 	DECLARE_MESSAGE_MAP()
 public:
-	afx_msg void OnBnClickedButton1();
 	IplImage* TheImage;
+	//handers
+	afx_msg void OnTimer(UINT_PTR nIDEvent);
 	afx_msg void OnBnClickedOpen();
+	//assistant moudels
 	void ShowImage(IplImage* img, UINT ID);
 	void ResizeImage(IplImage* img);
+	//old c-type
+	CvCapture* Capture;
+	CvCapture* m_Video;
+	IplImage* frame;
+	IplImage* m_grabframe;
+	CRect rect;
+	CDC *pDC;
+	HDC hDC;
+	CWnd *pwnd;
+	int ImgNum = 0;
 };

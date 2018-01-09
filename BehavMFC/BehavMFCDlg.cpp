@@ -7,14 +7,14 @@
 #define new DEBUG_NEW
 #endif
 
-//a new class on about 
+//********************************************** about 
 class CAboutDlg : public CDialogEx
 {
 public:
 	CAboutDlg();
 	enum { IDD = IDD_ABOUTBOX };
 protected:
-	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV 支持
+	virtual void DoDataExchange(CDataExchange* pDX);    
 protected:
 	DECLARE_MESSAGE_MAP()
 };
@@ -27,8 +27,6 @@ void CAboutDlg::DoDataExchange(CDataExchange* pDX)
 }
 BEGIN_MESSAGE_MAP(CAboutDlg, CDialogEx)
 END_MESSAGE_MAP()
-
-//finish about 
 CBehavMFCDlg::CBehavMFCDlg(CWnd* pParent /*=NULL*/)
 	: CDialogEx(CBehavMFCDlg::IDD, pParent)
 	, TheImage(NULL)
@@ -40,14 +38,16 @@ void CBehavMFCDlg::DoDataExchange(CDataExchange* pDX)
 	CDialogEx::DoDataExchange(pDX);
 }
 
+//**********************************map 
 BEGIN_MESSAGE_MAP(CBehavMFCDlg, CDialogEx)
 	ON_WM_SYSCOMMAND()
 	ON_WM_PAINT()
 	ON_WM_QUERYDRAGICON()
-	//ON_BN_CLICKED(IDC_BUTTON1, &CBehavMFCDlg::OnBnClickedButton1)
-	ON_BN_CLICKED(IDC_BUTTON5, &CBehavMFCDlg::OnBnClickedOpen)
+	ON_BN_CLICKED(IDC_BOpen, &CBehavMFCDlg::OnBnClickedOpen)
+	ON_WM_TIMER()
 END_MESSAGE_MAP()
 
+//*******************************************system hander
 BOOL CBehavMFCDlg::OnInitDialog()
 {
 	CDialogEx::OnInitDialog();
@@ -71,7 +71,6 @@ BOOL CBehavMFCDlg::OnInitDialog()
 	// 设置此对话框的图标。  当应用程序主窗口不是对话框时，框架将自动
 	SetIcon(m_hIcon, TRUE);			// 设置大图标
 	SetIcon(m_hIcon, FALSE);		// 设置小图标
-
 	// TODO:  在此添加额外的初始化代码
 	CvSize ImgSize;
 	ImgSize.height = IMAGE_HEIGHT;
@@ -79,6 +78,44 @@ BOOL CBehavMFCDlg::OnInitDialog()
 	TheImage = cvCreateImage(ImgSize, IPL_DEPTH_8U, IMAGE_CHANNELS);
 
 	return TRUE;  
+}
+
+void CBehavMFCDlg::OnPaint()
+{
+	if (IsIconic())
+	{
+		CPaintDC dc(this); // 用于绘制的设备上下文
+		SendMessage(WM_ICONERASEBKGND, reinterpret_cast<WPARAM>(dc.GetSafeHdc()), 0);
+		// 使图标在工作区矩形中居中
+		int cxIcon = GetSystemMetrics(SM_CXICON);
+		int cyIcon = GetSystemMetrics(SM_CYICON);
+		CRect rect;
+		GetClientRect(&rect);
+		int x = (rect.Width() - cxIcon + 1) / 2;
+		int y = (rect.Height() - cyIcon + 1) / 2;
+		// 绘制图标
+		dc.DrawIcon(x, y, m_hIcon);
+	}
+	else
+	{
+		CDialogEx::OnPaint();
+		CDialog::OnPaint();                    // 重绘对话框
+		CDialog::UpdateWindow();                // 更新windows窗口，如果无这步调用，图片显示还会出现问题
+		ShowImage(TheImage, IDC_ShowImg);
+	}
+}
+
+void CBehavMFCDlg::OnTimer(UINT_PTR nIDEvent)
+{
+	pDC = GetDlgItem(IDC_Camera)->GetDC();
+	GetDlgItem(IDC_Camera)->GetClientRect(&rect);
+	hDC = pDC->GetSafeHdc();//获取显示控件的句柄
+
+	frame = cvQueryFrame(Capture); //从摄像头或者文件中抓取并返回一帧
+	CvvImage m_CvvImage;
+	m_CvvImage.CopyOf(frame, 1); //复制该帧图像   
+	m_CvvImage.DrawToHDC(hDC, &rect); //显示到设备的矩形框内
+	CDialogEx::OnTimer(nIDEvent);
 }
 
 void CBehavMFCDlg::OnSysCommand(UINT nID, LPARAM lParam)
@@ -94,76 +131,35 @@ void CBehavMFCDlg::OnSysCommand(UINT nID, LPARAM lParam)
 	}
 }
 
-void CBehavMFCDlg::OnPaint()
-{
-	if (IsIconic())
-	{
-		CPaintDC dc(this); // 用于绘制的设备上下文
-
-		SendMessage(WM_ICONERASEBKGND, reinterpret_cast<WPARAM>(dc.GetSafeHdc()), 0);
-
-		// 使图标在工作区矩形中居中
-		int cxIcon = GetSystemMetrics(SM_CXICON);
-		int cyIcon = GetSystemMetrics(SM_CYICON);
-		CRect rect;
-		GetClientRect(&rect);
-		int x = (rect.Width() - cxIcon + 1) / 2;
-		int y = (rect.Height() - cyIcon + 1) / 2;
-
-		// 绘制图标
-		dc.DrawIcon(x, y, m_hIcon);
-	}
-	else
-	{
-		CDialogEx::OnPaint();
-		CDialog::OnPaint();                    // 重绘对话框
-		CDialog::UpdateWindow();                // 更新windows窗口，如果无这步调用，图片显示还会出现问题
-		ShowImage(TheImage, IDC_ShowImg);    
-	}
-}
-
-//当用户拖动最小化窗口时系统调用此函数取得光标
-//显示。
 HCURSOR CBehavMFCDlg::OnQueryDragIcon()
 {
 	return static_cast<HCURSOR>(m_hIcon);
 }
 
-void CBehavMFCDlg::OnBnClickedButton1()
-{
-	// TODO:  在此添加控件通知处理程序代码
-	//CString str;
-	//GetDlgItemText(IDC_EDIT1, str);
-	//int len = str.GetLength();
-	//CString strlen;
-	//strlen.Format(_T("number is %d"), len);
-	//MessageBox(strlen);
-}
-
+//**************************************button functions
 void CBehavMFCDlg::OnBnClickedOpen()
 {
-	CFileDialog dlg(
-		TRUE, _T("*.bmp"), NULL,
-		OFN_FILEMUSTEXIST | OFN_PATHMUSTEXIST | OFN_HIDEREADONLY,
-		_T("image files (*.bmp; *.jpg) |*.bmp; *.jpg | All Files (*.*) |*.*||"), NULL
-		);                                        // 选项图片的约定
-	dlg.m_ofn.lpstrTitle = _T("Open Image");    // 打开文件对话框的标题名
-	if (dlg.DoModal() != IDOK)                    // 判断是否获得图片
+	Capture = cvCreateCameraCapture(0);  
+	if (Capture == 0)
+	{
+		MessageBox(_T("无法连接摄像头！！！"));
 		return;
+	}
 
-	CString mPath = dlg.GetPathName();            // 获取图片路径
-	CT2A stp(mPath);
-	IplImage* ipl = cvLoadImage(stp, 1);    // 读取图片、缓存到一个局部变量 ipl 中
-	if (!ipl)                                    // 判断是否成功载入图片
-		return;
-	if (TheImage)                                // 对上一幅显示的图片数据清零
-		cvZero(TheImage);
+	frame = cvQueryFrame(Capture); 
+	pDC = GetDlgItem(IDC_Camera)->GetDC();
+	GetDlgItem(IDC_Camera)->GetClientRect(&rect);
+	hDC = pDC->GetSafeHdc(); 
 
-	ResizeImage(ipl);    // 对读入的图片进行缩放，使其宽或高最大值者刚好等于 256，再复制到 TheImage 中
-	ShowImage(TheImage, IDC_ShowImg);            // 调用显示图片函数    
-	cvReleaseImage(&ipl);                        // 释放 ipl 占用的内存
+	CvvImage m_CvvImage;
+	m_CvvImage.CopyOf(frame, 1); //复制该帧图像     
+	m_CvvImage.DrawToHDC(hDC, &rect); //显示到设备的矩形框内  
+	ReleaseDC(pDC);
+
+	SetTimer(1, 25, NULL); //定时器，定时时间和帧率一致
 }
 
+//*************************************************assistant moduels
 void CBehavMFCDlg::ShowImage(IplImage* img, UINT ID)
 {
 	CDC* pDC = GetDlgItem(ID)->GetDC();        // 获得显示控件的 DC
@@ -214,3 +210,35 @@ void CBehavMFCDlg::ResizeImage(IplImage* img)
 	// 重置 TheImage 的 ROI 准备读入下一幅图片
 	cvResetImageROI(TheImage);
 }
+
+//*************************open a local picture part
+//void CBehavMFCDlg::OnBnClickedOpen()
+//{
+//	//CFileDialog dlg(
+//	//	TRUE, _T("*.jpg"), NULL,
+//	//	OFN_FILEMUSTEXIST | OFN_PATHMUSTEXIST | OFN_HIDEREADONLY,
+//	//	_T("image files (*.bmp; *.jpg) |*.bmp; *.jpg | All Files (*.*) |*.*||"), NULL
+//	//	);   
+//	CFileDialog dlg(
+//		TRUE, _T("*.jpg"), NULL,
+//		OFN_FILEMUSTEXIST | OFN_PATHMUSTEXIST | OFN_HIDEREADONLY,
+//		_T("Image Files (*.jpg) |*.jpg; | All Files (*.*) |*.*||"), NULL
+//		);
+//
+//	dlg.m_ofn.lpstrTitle = _T("Open Image");    // 打开文件对话框的标题名
+//	if (dlg.DoModal() != IDOK)                    // 判断是否获得图片
+//		return;
+//
+//	CString mPath = dlg.GetPathName();            // 获取图片路径
+//	CT2A stp(mPath);
+//	IplImage* ipl = cvLoadImage(stp, 1);    // 读取图片、缓存到一个局部变量 ipl 中
+//	if (!ipl)                                    // 判断是否成功载入图片
+//		return;
+//	if (TheImage)                                // 对上一幅显示的图片数据清零
+//		cvZero(TheImage);
+//
+//	ResizeImage(ipl);    // 对读入的图片进行缩放，使其宽或高最大值者刚好等于 256，再复制到 TheImage 中
+//	ShowImage(TheImage, IDC_ShowImg);            // 调用显示图片函数    
+//	cvReleaseImage(&ipl);                        // 释放 ipl 占用的内存
+//}
+
