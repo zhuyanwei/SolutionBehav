@@ -27,6 +27,8 @@ public:
 	//handers
 	afx_msg void OnTimer(UINT_PTR nIDEvent);
 	afx_msg void OnBnClickedOpen();
+	afx_msg void OnBnClickedClose();
+	afx_msg void OnBnClickedCatch();
 	//assistant moudels
 	void ShowImage(IplImage* img, UINT ID);
 	void ResizeImage(IplImage* img);

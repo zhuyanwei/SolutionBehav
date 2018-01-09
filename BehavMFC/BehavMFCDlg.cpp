@@ -7,7 +7,7 @@
 #define new DEBUG_NEW
 #endif
 
-//********************************************** about 
+//************************************************************************* about 
 class CAboutDlg : public CDialogEx
 {
 public:
@@ -38,16 +38,18 @@ void CBehavMFCDlg::DoDataExchange(CDataExchange* pDX)
 	CDialogEx::DoDataExchange(pDX);
 }
 
-//**********************************map 
+//****************************************************************************************************************map 
 BEGIN_MESSAGE_MAP(CBehavMFCDlg, CDialogEx)
 	ON_WM_SYSCOMMAND()
 	ON_WM_PAINT()
 	ON_WM_QUERYDRAGICON()
-	ON_BN_CLICKED(IDC_BOpen, &CBehavMFCDlg::OnBnClickedOpen)
 	ON_WM_TIMER()
+	ON_BN_CLICKED(IDC_BOpen, &CBehavMFCDlg::OnBnClickedOpen)
+	ON_BN_CLICKED(IDC_BClose, &CBehavMFCDlg::OnBnClickedClose)
+	ON_BN_CLICKED(IDC_BCatch, &CBehavMFCDlg::OnBnClickedCatch)
 END_MESSAGE_MAP()
 
-//*******************************************system hander
+//******************************************************************************************************system hander
 BOOL CBehavMFCDlg::OnInitDialog()
 {
 	CDialogEx::OnInitDialog();
@@ -100,7 +102,7 @@ void CBehavMFCDlg::OnPaint()
 	{
 		CDialogEx::OnPaint();
 		CDialog::OnPaint();                    // 重绘对话框
-		CDialog::UpdateWindow();                // 更新windows窗口，如果无这步调用，图片显示还会出现问题
+		CDialog::UpdateWindow();                // 更新windows窗口
 		ShowImage(TheImage, IDC_ShowImg);
 	}
 }
@@ -136,7 +138,7 @@ HCURSOR CBehavMFCDlg::OnQueryDragIcon()
 	return static_cast<HCURSOR>(m_hIcon);
 }
 
-//**************************************button functions
+//*************************************************************************************************button functions
 void CBehavMFCDlg::OnBnClickedOpen()
 {
 	Capture = cvCreateCameraCapture(0);  
@@ -159,7 +161,56 @@ void CBehavMFCDlg::OnBnClickedOpen()
 	SetTimer(1, 25, NULL); //定时器，定时时间和帧率一致
 }
 
-//*************************************************assistant moduels
+void CBehavMFCDlg::OnBnClickedClose()
+{
+	if (!Capture)
+	{
+		MessageBox(_T("没有打开摄像头！！！"));
+		return;
+	}
+	cvReleaseCapture(&Capture);
+	pDC = GetDlgItem(IDC_Camera)->GetDC();
+	GetDlgItem(IDC_Camera)->GetClientRect(&rect);
+	hDC = pDC->GetSafeHdc();//获取显示控件的句柄
+	frame = cvLoadImage("MySrc/lena.jpg"); 
+	CvvImage m_CvvImage;
+	m_CvvImage.CopyOf(frame, 1); //复制该帧图像   
+	m_CvvImage.DrawToHDC(hDC, &rect); //显示到设备的矩形框内
+	ReleaseDC(pDC);
+}
+void CBehavMFCDlg::OnBnClickedCatch()
+{
+	//m_grabframe = cvQueryFrame(Capture);
+	m_grabframe = frame;
+	if (m_grabframe == 0)
+	{
+		MessageBox(_T("摄像头已关闭，无法捕捉图像！！！"));
+		return;
+	}
+	CString ImagePath = TEXT("MySrc/CatchedFiles/");
+	//CString ImagePath = _T("D:\\Documents\\Visual Studio 2013\\Projects\\标定图片\\");
+	if (!PathIsDirectory(ImagePath))
+	{
+		CreateDirectory(ImagePath, 0);//不存在则创建
+		MessageBox(_T("Folder Created."));
+		return;
+	}
+	char ImagesName[100];
+	ImgNum = ImgNum + 1;
+	sprintf_s(ImagesName, "%s%.2d%s", "MySrc/CatchedFiles/", ImgNum, ".jpg");
+	IplImage * m_snap = cvCreateImage(cvGetSize(m_grabframe), m_grabframe->depth, m_grabframe->nChannels);
+	cvCopy(m_grabframe, m_snap, NULL);
+	cvSaveImage(ImagesName, m_snap); //把图像写入指定文件夹的文件中去
+	//以下代码是完成图像的显示过程
+	pDC = GetDlgItem(IDC_Picture)->GetDC();
+	GetDlgItem(IDC_Picture)->GetClientRect(&rect);
+	hDC = pDC->GetSafeHdc();//获取显示控件的句柄
+	CvvImage m_CvvImage;
+	m_CvvImage.CopyOf(m_snap, 1); //复制该帧图像   
+	m_CvvImage.DrawToHDC(hDC, &rect); //显示到设备环境的矩形框内
+}
+
+//**************************************************************************************************assistant moduels
 void CBehavMFCDlg::ShowImage(IplImage* img, UINT ID)
 {
 	CDC* pDC = GetDlgItem(ID)->GetDC();        // 获得显示控件的 DC
