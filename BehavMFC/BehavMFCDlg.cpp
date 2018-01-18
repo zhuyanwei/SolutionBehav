@@ -29,7 +29,6 @@ BEGIN_MESSAGE_MAP(CAboutDlg, CDialogEx)
 END_MESSAGE_MAP()
 CBehavMFCDlg::CBehavMFCDlg(CWnd* pParent /*=NULL*/)
 	: CDialogEx(CBehavMFCDlg::IDD, pParent)
-	, TheImage(NULL)
 {
 	m_hIcon = AfxGetApp()->LoadIcon(IDR_MAINFRAME);
 }
@@ -43,16 +42,20 @@ BEGIN_MESSAGE_MAP(CBehavMFCDlg, CDialogEx)
 	ON_WM_SYSCOMMAND()
 	ON_WM_PAINT()
 	ON_WM_QUERYDRAGICON()
+	
 	ON_WM_TIMER()
-	ON_BN_CLICKED(IDC_BOpen, &CBehavMFCDlg::OnBnClickedOpen)
-	ON_BN_CLICKED(IDC_BClose, &CBehavMFCDlg::OnBnClickedClose)
-	ON_BN_CLICKED(IDC_BCatch, &CBehavMFCDlg::OnBnClickedCatch)
-	ON_BN_CLICKED(IDC_BProcess, &CBehavMFCDlg::OnBnClickedProcess)
+	ON_WM_DESTROY()
 	ON_BN_CLICKED(IDC_RCamera, &CBehavMFCDlg::OnBnClickedRCamera)
 	ON_BN_CLICKED(IDC_RLocal, &CBehavMFCDlg::OnBnClickedRLocal)
+	ON_BN_CLICKED(IDC_BOpen, &CBehavMFCDlg::OnBnClickedOpen)
+	ON_BN_CLICKED(IDC_BClose, &CBehavMFCDlg::OnBnClickedClose)
 	ON_BN_CLICKED(IDC_BPause, &CBehavMFCDlg::OnBnClickedBpause)
 	ON_BN_CLICKED(IDC_BContinue, &CBehavMFCDlg::OnBnClickedBcontinue)
-	ON_WM_DESTROY()
+	ON_BN_CLICKED(IDC_BSaveBegin, &CBehavMFCDlg::OnBnClickedBsave)
+	ON_BN_CLICKED(IDC_BSaveDone, &CBehavMFCDlg::OnBnClickedBsavedone)
+	ON_BN_CLICKED(IDC_BCatch, &CBehavMFCDlg::OnBnClickedCatch)
+	ON_BN_CLICKED(IDC_BProcess, &CBehavMFCDlg::OnBnClickedProcess)
+
 END_MESSAGE_MAP()
 
 //******************************************************************************************************system hander
@@ -141,6 +144,8 @@ void CBehavMFCDlg::OnTimer(UINT_PTR nIDEvent)
 	m_CvvImage.CopyOf(frame, 1); //复制该帧图像   
 	m_CvvImage.DrawToHDC(hDC, &rect); //显示到设备的矩形框内
 	CDialogEx::OnTimer(nIDEvent);
+	//save video
+	cvWriteFrame(writer, frame);
 }
 
 void CBehavMFCDlg::OnDestroy()
@@ -148,15 +153,48 @@ void CBehavMFCDlg::OnDestroy()
 	CDialogEx::OnDestroy();
 	// TODO:  在此处添加消息处理程序代码
 	//release resource
+	if (Capture)
+		cvReleaseCapture(&Capture);
+	if (writer)
+		cvReleaseVideoWriter(&writer);
 	KillTimer(1);
-	if (!Capture)
-	{
-		return;
-	}
-	cvReleaseCapture(&Capture);
 }
 
 //**********************************************************************************************************buttons
+void CBehavMFCDlg::OnBnClickedRCamera()
+{
+	if (Capture)
+	{
+		MessageBox(_T("Video is open！\n-->Close"));
+		if (choose == "Local")
+		{
+			CButton* radioR = (CButton*)GetDlgItem(IDC_RLocal);
+			radioR->SetCheck(1);
+			CButton* radioC = (CButton*)GetDlgItem(IDC_RCamera);
+			radioC->SetCheck(0);
+		}
+		return;
+	}
+	choose = "Camera";
+}
+
+void CBehavMFCDlg::OnBnClickedRLocal()
+{
+	if (Capture)
+	{
+		MessageBox(_T("Video is open！\n-->Close"));
+		if (choose == "Camera")
+		{
+			CButton* radioR = (CButton*)GetDlgItem(IDC_RLocal);
+			radioR->SetCheck(0);
+			CButton* radioC = (CButton*)GetDlgItem(IDC_RCamera);
+			radioC->SetCheck(1);
+		}
+		return;
+	}
+	choose = "Local";
+}
+
 void CBehavMFCDlg::OnBnClickedOpen()
 {
 	//release $Capture
@@ -209,7 +247,7 @@ void CBehavMFCDlg::OnBnClickedOpen()
 	m_CvvImage.DrawToHDC(hDC, &rect); //显示到设备的矩形框内  
 	ReleaseDC(pDC);
 
-	SetTimer(1, 25, NULL); //定时器
+	SetTimer(1, FPS, NULL); //定时器
 }
 
 void CBehavMFCDlg::OnBnClickedClose()
@@ -252,6 +290,51 @@ void CBehavMFCDlg::OnBnClickedBcontinue()
 	SetTimer(1, 25, NULL);
 }
 
+void CBehavMFCDlg::OnBnClickedBsave()
+{
+	//CvSize size = cvSize(
+	//	(int)cvGetCaptureProperty(cap, CV_CAP_PROP_FRAME_WIDTH),
+	//	(int)cvGetCaptureProperty(cap, CV_CAP_PROP_FRAME_HEIGHT)
+	//	);
+	//double fps = 25;
+	//CvSize size = cvSize(640, 480);
+	//writer = cvCreateVideoWriter("MyOutput/SavedVideos/MyVideo.avi", CV_FOURCC('P', 'I', 'M', '1'), fps, size);
+	//writer = cvCreateVideoWriter("MyOutput/MyVideo.avi", CV_FOURCC('X', 'V', 'I', 'D'), fps, size);
+	//release $writer
+	if (!Capture)
+	{
+		MessageBox(_T("No open video！\n-->Open"));
+		return;
+	}
+	if (choose == "Local")
+	{
+		MessageBox(_T("It is local video！\n-->Camera"));
+		return;
+	}
+	if (writer)
+		cvReleaseVideoWriter(&writer);
+	char VideosName[100];
+	ImgNum = ImgNum + 1;
+	sprintf_s(VideosName, "%s%.2d%s", "MyOutput/SavedVideos/", ImgNum, ".avi");
+	writer = cvCreateVideoWriter(VideosName, CV_FOURCC('X', 'V', 'I', 'D'), FPS, cvSize(VIDEO_WIDTH, VIDEO_HEIGHT));
+}
+
+void CBehavMFCDlg::OnBnClickedBsavedone()
+{
+	if (!writer)
+	{
+		MessageBox(_T("Not saving！\n-->SaveBegin"));
+		return;
+	}
+	cvReleaseVideoWriter(&writer);
+	//char VideosName[100];
+	//ImgNum = ImgNum + 1;
+	//sprintf_s(VideosName, "%s%.2d%s", "MyOutput/CatchedPictures/", ImgNum, ".avi");
+	//IplImage* m_snap = cvCreateImage(cvGetSize(m_grabframe), m_grabframe->depth, m_grabframe->nChannels);
+	//cvCopy(m_grabframe, m_snap, NULL);
+	//cvSaveImage(VideosName, m_snap);
+}
+
 void CBehavMFCDlg::OnBnClickedCatch()
 {
 	//m_grabframe = cvQueryFrame(Capture);
@@ -261,35 +344,42 @@ void CBehavMFCDlg::OnBnClickedCatch()
 		MessageBox(_T("No frame!"));
 		return;
 	}
-	CString ImagePath = TEXT("MyOutput/CatchedPics/");
-	//CString ImagePath = _T("D:\\Documents\\Visual Studio 2013\\Projects\\标定图片\\");
-	if (!PathIsDirectory(ImagePath))
-	{
-		CreateDirectory(ImagePath, 0);//不存在则创建
-		MessageBox(_T("Folder created"));
-		return;
-	}
+	//CString ImagePath = TEXT("MyOutput/CatchedPictures/");
+	////CString ImagePath = _T("D:\\Documents\\Visual Studio 2013\\Projects\\标定图片\\");
+	//if (!PathIsDirectory(ImagePath))
+	//{
+	//	CreateDirectory(ImagePath, 0);//不存在则创建
+	//	MessageBox(_T("Folder created"));
+	//	return;
+	//}
 	char ImagesName[100];
 	ImgNum = ImgNum + 1;
-	sprintf_s(ImagesName, "%s%.2d%s", "MyOutput/CatchedPics/", ImgNum, ".jpg");
+	sprintf_s(ImagesName, "%s%.2d%s", "MyOutput/CatchedPictures/", ImgNum, ".jpg");
 	IplImage* m_snap = cvCreateImage(cvGetSize(m_grabframe), m_grabframe->depth, m_grabframe->nChannels);
 	cvCopy(m_grabframe, m_snap, NULL);
-	cvSaveImage(ImagesName, m_snap); 
-	////show in the rect
+	cvSaveImage(ImagesName, m_snap);
+	////show Catshedpic in the rect
 	//pDC = GetDlgItem(IDC_Picture)->GetDC();
 	//GetDlgItem(IDC_Picture)->GetClientRect(&rect);
 	//hDC = pDC->GetSafeHdc();
 	//CvvImage m_CvvImage;
-	//m_CvvImage.CopyOf(m_snap, 1); //复制该帧图像   
-	//m_CvvImage.DrawToHDC(hDC, &rect); //显示到设备环境的矩形框内
+	//m_CvvImage.CopyOf(m_snap, 1); 
+	//m_CvvImage.DrawToHDC(hDC, &rect); 
 }
 
 void CBehavMFCDlg::OnBnClickedProcess()
 {
-	//int i = 10;
+	char VideosName[100];
+	ImgNum = ImgNum + 1;
+	sprintf_s(VideosName, "%s%.2d%s", "MyOutput/CatchedPictures/", ImgNum, ".avi");
 	CString str;
-	str.Format(_T("this%s"),choose);
+	str.Format(_T("this-%s"), &VideosName);
 	MessageBox(str);
+
+	//int i = 10;
+	//CString str;
+	//str.Format(_T("this%s"),choose);
+	//MessageBox(str);
 	//MessageBox(choose);
 	//MessageBox(_T("No frame !"));
 	//IplImage *gray = 0, *edge = 0;
@@ -302,14 +392,6 @@ void CBehavMFCDlg::OnBnClickedProcess()
 
 	//cvReleaseImage(&gray);
 	//cvReleaseImage(&edge);
-}
-void CBehavMFCDlg::OnBnClickedRCamera()
-{
-	choose = "Camera";
-}
-void CBehavMFCDlg::OnBnClickedRLocal()
-{
-	choose = "Local";
 }
 
 //**************************************************************************************************assistant moduels
@@ -355,13 +437,13 @@ void CBehavMFCDlg::ResizeImage(IplImage* img)
 	int tly = (nw > nh) ? (int)(256 - nh) / 2 : 0;
 
 	// 设置 TheImage 的 ROI 区域，用来存入图片 img
-	cvSetImageROI(TheImage, cvRect(tlx, tly, nw, nh));
+	//cvSetImageROI(TheImage, cvRect(tlx, tly, nw, nh));
 
 	// 对图片 img 进行缩放，并存入到 TheImage 中
-	cvResize(img, TheImage);
+	//cvResize(img, TheImage);
 
 	// 重置 TheImage 的 ROI 准备读入下一幅图片
-	cvResetImageROI(TheImage);
+	//cvResetImageROI(TheImage);
 }
 
 //*************************open a local picture part

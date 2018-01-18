@@ -2,8 +2,9 @@
 #include <opencv2\opencv.hpp>
 #include "ClassCV\CvvImage.h"
 
-#define IMAGE_WIDTH 256
-#define IMAGE_HEIGHT 256
+#define FPS 25
+#define VIDEO_WIDTH 640
+#define VIDEO_HEIGHT 480
 #define IMAGE_CHANNELS 3
 
 using namespace cv;
@@ -24,8 +25,9 @@ protected:
 	afx_msg HCURSOR OnQueryDragIcon();
 	DECLARE_MESSAGE_MAP()
 public:
-	IplImage* TheImage;
 	CString choose;
+	int ImgNum = 0;
+	int VidNum = 0;
 	//handers
 	afx_msg void OnTimer(UINT_PTR nIDEvent);
 	afx_msg void OnDestroy();
@@ -36,7 +38,8 @@ public:
 	afx_msg void OnBnClickedClose();
 	afx_msg void OnBnClickedBpause();
 	afx_msg void OnBnClickedBcontinue();
-
+	afx_msg void OnBnClickedBsave();
+	afx_msg void OnBnClickedBsavedone();
 	afx_msg void OnBnClickedCatch();
 	afx_msg void OnBnClickedProcess();
 	//assistant moudels
@@ -44,12 +47,11 @@ public:
 	void ResizeImage(IplImage* img);
 	//old c-type
 	CvCapture* Capture;
-	CvCapture* m_Video;
 	IplImage* frame;
 	IplImage* m_grabframe;
+	CvVideoWriter* writer;
 	CRect rect;
 	CDC *pDC;
 	HDC hDC;
 	CWnd *pwnd;
-	int ImgNum = 0;
 };
