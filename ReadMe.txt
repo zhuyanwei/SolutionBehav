@@ -5,3 +5,5 @@ asus camera:640*480
 3.I/O Path
 MySrc/
 MyOutput/--CatchedPictures/ --SavedVideos/
+4.rc file type
+(x,y,width,height)
