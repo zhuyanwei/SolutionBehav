@@ -1,8 +1,8 @@
 #first line
 
 Debug/
-*/Debug/
 MySrc/
+MyOutput/
 ipch/
 
 *.aps

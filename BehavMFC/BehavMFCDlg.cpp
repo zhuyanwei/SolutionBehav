@@ -47,6 +47,12 @@ BEGIN_MESSAGE_MAP(CBehavMFCDlg, CDialogEx)
 	ON_BN_CLICKED(IDC_BOpen, &CBehavMFCDlg::OnBnClickedOpen)
 	ON_BN_CLICKED(IDC_BClose, &CBehavMFCDlg::OnBnClickedClose)
 	ON_BN_CLICKED(IDC_BCatch, &CBehavMFCDlg::OnBnClickedCatch)
+	ON_BN_CLICKED(IDC_BProcess, &CBehavMFCDlg::OnBnClickedProcess)
+	ON_BN_CLICKED(IDC_RCamera, &CBehavMFCDlg::OnBnClickedRCamera)
+	ON_BN_CLICKED(IDC_RLocal, &CBehavMFCDlg::OnBnClickedRLocal)
+	ON_BN_CLICKED(IDC_BPause, &CBehavMFCDlg::OnBnClickedBpause)
+	ON_BN_CLICKED(IDC_BContinue, &CBehavMFCDlg::OnBnClickedBcontinue)
+	ON_WM_DESTROY()
 END_MESSAGE_MAP()
 
 //******************************************************************************************************system hander
@@ -69,23 +75,22 @@ BOOL CBehavMFCDlg::OnInitDialog()
 			pSysMenu->AppendMenu(MF_STRING, IDM_ABOUTBOX, strAboutMenu);
 		}
 	}
-
 	// 设置此对话框的图标。  当应用程序主窗口不是对话框时，框架将自动
 	SetIcon(m_hIcon, TRUE);			// 设置大图标
 	SetIcon(m_hIcon, FALSE);		// 设置小图标
 	// TODO:  在此添加额外的初始化代码
-	CvSize ImgSize;
-	ImgSize.height = IMAGE_HEIGHT;
-	ImgSize.width = IMAGE_WIDTH;
-	TheImage = cvCreateImage(ImgSize, IPL_DEPTH_8U, IMAGE_CHANNELS);
-
+	//default choice
+	CButton* radio = (CButton*)GetDlgItem(IDC_RCamera);
+	radio->SetCheck(1);
+	choose = "Camera";
+	
 	return TRUE;  
 }
-
 void CBehavMFCDlg::OnPaint()
 {
 	if (IsIconic())
 	{
+		printf("onPaint isiconic");
 		CPaintDC dc(this); // 用于绘制的设备上下文
 		SendMessage(WM_ICONERASEBKGND, reinterpret_cast<WPARAM>(dc.GetSafeHdc()), 0);
 		// 使图标在工作区矩形中居中
@@ -100,13 +105,31 @@ void CBehavMFCDlg::OnPaint()
 	}
 	else
 	{
+		printf("onpaint else");
 		CDialogEx::OnPaint();
-		CDialog::OnPaint();                    // 重绘对话框
-		CDialog::UpdateWindow();                // 更新windows窗口
-		ShowImage(TheImage, IDC_ShowImg);
+		//CDialog::OnPaint();                    // 重绘对话框
+		//CDialog::UpdateWindow();                // 更新windows窗口
+		//ShowImage(TheImage, IDC_ShowImg);
 	}
 }
+void CBehavMFCDlg::OnSysCommand(UINT nID, LPARAM lParam)
+{
+	if ((nID & 0xFFF0) == IDM_ABOUTBOX)
+	{
+		CAboutDlg dlgAbout;
+		dlgAbout.DoModal();
+	}
+	else
+	{
+		CDialogEx::OnSysCommand(nID, lParam);
+	}
+}
+HCURSOR CBehavMFCDlg::OnQueryDragIcon()
+{
+	return static_cast<HCURSOR>(m_hIcon);
+}
 
+//***************************************************************************************************DIY hander
 void CBehavMFCDlg::OnTimer(UINT_PTR nIDEvent)
 {
 	pDC = GetDlgItem(IDC_Camera)->GetDC();
@@ -120,55 +143,85 @@ void CBehavMFCDlg::OnTimer(UINT_PTR nIDEvent)
 	CDialogEx::OnTimer(nIDEvent);
 }
 
-void CBehavMFCDlg::OnSysCommand(UINT nID, LPARAM lParam)
+void CBehavMFCDlg::OnDestroy()
 {
-	if ((nID & 0xFFF0) == IDM_ABOUTBOX)
+	CDialogEx::OnDestroy();
+	// TODO:  在此处添加消息处理程序代码
+	//release resource
+	KillTimer(1);
+	if (!Capture)
 	{
-		CAboutDlg dlgAbout;
-		dlgAbout.DoModal();
+		return;
+	}
+	cvReleaseCapture(&Capture);
+}
+
+//**********************************************************************************************************buttons
+void CBehavMFCDlg::OnBnClickedOpen()
+{
+	//release $Capture
+	if (Capture)
+		cvReleaseCapture(&Capture);
+	//judge $choose
+	if (choose == "Camera")
+	{
+		Capture = cvCreateCameraCapture(0);
+		if (Capture == 0)
+		{
+			MessageBox(_T("Can't open camera!"));
+			return;
+		}
+	}
+	else if (choose == "Local")
+	{
+		//open file box
+		CFileDialog dlg(
+			TRUE, _T("*.avi"), NULL,
+			OFN_FILEMUSTEXIST | OFN_PATHMUSTEXIST | OFN_HIDEREADONLY,
+			_T("Video files (*.avi) |*.avi; | All files (*.*) |*.*||"), NULL
+			);
+		dlg.m_ofn.lpstrTitle = _T("Open video");    // 打开文件对话框的标题名
+		if (dlg.DoModal() != IDOK)                    // 判断是否获得图片
+			return;
+		
+		CString mPath = dlg.GetPathName();            // 获取图片路径
+		CT2A stp(mPath);		
+		Capture = cvCreateFileCapture(stp);
+		if (NULL == Capture)
+		{
+			MessageBox(_T("No video file！"));
+			return ;
+		}
 	}
 	else
 	{
-		CDialogEx::OnSysCommand(nID, lParam);
-	}
-}
-
-HCURSOR CBehavMFCDlg::OnQueryDragIcon()
-{
-	return static_cast<HCURSOR>(m_hIcon);
-}
-
-//*************************************************************************************************button functions
-void CBehavMFCDlg::OnBnClickedOpen()
-{
-	Capture = cvCreateCameraCapture(0);  
-	if (Capture == 0)
-	{
-		MessageBox(_T("无法连接摄像头！！！"));
+		MessageBox(_T("Wrong choose!"));
 		return;
 	}
-
+	//get frame
 	frame = cvQueryFrame(Capture); 
 	pDC = GetDlgItem(IDC_Camera)->GetDC();
 	GetDlgItem(IDC_Camera)->GetClientRect(&rect);
 	hDC = pDC->GetSafeHdc(); 
-
+	//show frame
 	CvvImage m_CvvImage;
 	m_CvvImage.CopyOf(frame, 1); //复制该帧图像     
 	m_CvvImage.DrawToHDC(hDC, &rect); //显示到设备的矩形框内  
 	ReleaseDC(pDC);
 
-	SetTimer(1, 25, NULL); //定时器，定时时间和帧率一致
+	SetTimer(1, 25, NULL); //定时器
 }
 
 void CBehavMFCDlg::OnBnClickedClose()
 {
 	if (!Capture)
 	{
-		MessageBox(_T("没有打开摄像头！！！"));
+		MessageBox(_T("No open video！"));
 		return;
 	}
 	cvReleaseCapture(&Capture);
+	KillTimer(1);
+
 	pDC = GetDlgItem(IDC_Camera)->GetDC();
 	GetDlgItem(IDC_Camera)->GetClientRect(&rect);
 	hDC = pDC->GetSafeHdc();//获取显示控件的句柄
@@ -178,36 +231,85 @@ void CBehavMFCDlg::OnBnClickedClose()
 	m_CvvImage.DrawToHDC(hDC, &rect); //显示到设备的矩形框内
 	ReleaseDC(pDC);
 }
+
+void CBehavMFCDlg::OnBnClickedBpause()
+{
+	if (!Capture)
+	{
+		MessageBox(_T("No open video！"));
+		return;
+	}
+	KillTimer(1);
+}
+
+void CBehavMFCDlg::OnBnClickedBcontinue()
+{
+	if (!Capture)
+	{
+		MessageBox(_T("No open video！"));
+		return;
+	}
+	SetTimer(1, 25, NULL);
+}
+
 void CBehavMFCDlg::OnBnClickedCatch()
 {
 	//m_grabframe = cvQueryFrame(Capture);
 	m_grabframe = frame;
 	if (m_grabframe == 0)
 	{
-		MessageBox(_T("摄像头已关闭，无法捕捉图像！！！"));
+		MessageBox(_T("No frame!"));
 		return;
 	}
-	CString ImagePath = TEXT("MySrc/CatchedFiles/");
+	CString ImagePath = TEXT("MyOutput/CatchedPics/");
 	//CString ImagePath = _T("D:\\Documents\\Visual Studio 2013\\Projects\\标定图片\\");
 	if (!PathIsDirectory(ImagePath))
 	{
 		CreateDirectory(ImagePath, 0);//不存在则创建
-		MessageBox(_T("Folder Created."));
+		MessageBox(_T("Folder created"));
 		return;
 	}
 	char ImagesName[100];
 	ImgNum = ImgNum + 1;
-	sprintf_s(ImagesName, "%s%.2d%s", "MySrc/CatchedFiles/", ImgNum, ".jpg");
-	IplImage * m_snap = cvCreateImage(cvGetSize(m_grabframe), m_grabframe->depth, m_grabframe->nChannels);
+	sprintf_s(ImagesName, "%s%.2d%s", "MyOutput/CatchedPics/", ImgNum, ".jpg");
+	IplImage* m_snap = cvCreateImage(cvGetSize(m_grabframe), m_grabframe->depth, m_grabframe->nChannels);
 	cvCopy(m_grabframe, m_snap, NULL);
-	cvSaveImage(ImagesName, m_snap); //把图像写入指定文件夹的文件中去
-	//以下代码是完成图像的显示过程
-	pDC = GetDlgItem(IDC_Picture)->GetDC();
-	GetDlgItem(IDC_Picture)->GetClientRect(&rect);
-	hDC = pDC->GetSafeHdc();//获取显示控件的句柄
-	CvvImage m_CvvImage;
-	m_CvvImage.CopyOf(m_snap, 1); //复制该帧图像   
-	m_CvvImage.DrawToHDC(hDC, &rect); //显示到设备环境的矩形框内
+	cvSaveImage(ImagesName, m_snap); 
+	////show in the rect
+	//pDC = GetDlgItem(IDC_Picture)->GetDC();
+	//GetDlgItem(IDC_Picture)->GetClientRect(&rect);
+	//hDC = pDC->GetSafeHdc();
+	//CvvImage m_CvvImage;
+	//m_CvvImage.CopyOf(m_snap, 1); //复制该帧图像   
+	//m_CvvImage.DrawToHDC(hDC, &rect); //显示到设备环境的矩形框内
+}
+
+void CBehavMFCDlg::OnBnClickedProcess()
+{
+	//int i = 10;
+	CString str;
+	str.Format(_T("this%s"),choose);
+	MessageBox(str);
+	//MessageBox(choose);
+	//MessageBox(_T("No frame !"));
+	//IplImage *gray = 0, *edge = 0;
+	//gray = cvCreateImage(cvSize(IMAGE_WIDTH, IMAGE_HEIGHT), IPL_DEPTH_8U, 1);
+	//edge = cvCreateImage(cvSize(IMAGE_WIDTH, IMAGE_HEIGHT), IPL_DEPTH_8U, 1);
+	//cvCvtColor(TheImage, gray, CV_BGR2GRAY);
+	//cvCanny(gray, edge, 30, 100, 3);
+	//cvCvtColor(edge, TheImage, CV_GRAY2BGR);
+	//ShowImage(TheImage, IDC_ShowImg);            // 调用显示图片函数
+
+	//cvReleaseImage(&gray);
+	//cvReleaseImage(&edge);
+}
+void CBehavMFCDlg::OnBnClickedRCamera()
+{
+	choose = "Camera";
+}
+void CBehavMFCDlg::OnBnClickedRLocal()
+{
+	choose = "Local";
 }
 
 //**************************************************************************************************assistant moduels
@@ -292,4 +394,7 @@ void CBehavMFCDlg::ResizeImage(IplImage* img)
 //	ShowImage(TheImage, IDC_ShowImg);            // 调用显示图片函数    
 //	cvReleaseImage(&ipl);                        // 释放 ipl 占用的内存
 //}
+
+
+
 
