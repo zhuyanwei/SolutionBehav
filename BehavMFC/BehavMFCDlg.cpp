@@ -165,7 +165,7 @@ void CBehavMFCDlg::OnBnClickedRCamera()
 {
 	if (Capture)
 	{
-		MessageBox(_T("Video is open£¡\n-->Close"));
+		MessageBox(_T("Video is open£¡\n-->Close"), _T("Waring"), MB_ICONEXCLAMATION);
 		if (choose == "Local")
 		{
 			CButton* radioR = (CButton*)GetDlgItem(IDC_RLocal);
@@ -182,7 +182,7 @@ void CBehavMFCDlg::OnBnClickedRLocal()
 {
 	if (Capture)
 	{
-		MessageBox(_T("Video is open£¡\n-->Close"));
+		MessageBox(_T("Video is open£¡\n-->Close"), _T("Waring"), MB_ICONEXCLAMATION);
 		if (choose == "Camera")
 		{
 			CButton* radioR = (CButton*)GetDlgItem(IDC_RLocal);
@@ -206,7 +206,7 @@ void CBehavMFCDlg::OnBnClickedOpen()
 		Capture = cvCreateCameraCapture(0);
 		if (Capture == 0)
 		{
-			MessageBox(_T("Can't open camera!"));
+			MessageBox(_T("Can't open camera!"), _T("Waring"), MB_ICONEXCLAMATION);
 			return;
 		}
 	}
@@ -227,13 +227,13 @@ void CBehavMFCDlg::OnBnClickedOpen()
 		Capture = cvCreateFileCapture(stp);
 		if (NULL == Capture)
 		{
-			MessageBox(_T("No video file£¡"));
+			MessageBox(_T("No video file£¡"), _T("Waring"), MB_ICONEXCLAMATION);
 			return ;
 		}
 	}
 	else
 	{
-		MessageBox(_T("Wrong choose!"));
+		MessageBox(_T("Wrong choose!"), _T("Waring"), MB_ICONEXCLAMATION);
 		return;
 	}
 	//get frame
@@ -254,7 +254,7 @@ void CBehavMFCDlg::OnBnClickedClose()
 {
 	if (!Capture)
 	{
-		MessageBox(_T("No open video£¡"));
+		MessageBox(_T("No open video£¡\n-->Open"),_T("Waring"), MB_ICONEXCLAMATION);
 		return;
 	}
 	cvReleaseCapture(&Capture);
@@ -274,7 +274,7 @@ void CBehavMFCDlg::OnBnClickedBpause()
 {
 	if (!Capture)
 	{
-		MessageBox(_T("No open video£¡"));
+		MessageBox(_T("No open video£¡"), _T("Waring"), MB_ICONEXCLAMATION);
 		return;
 	}
 	KillTimer(1);
@@ -284,7 +284,7 @@ void CBehavMFCDlg::OnBnClickedBcontinue()
 {
 	if (!Capture)
 	{
-		MessageBox(_T("No open video£¡"));
+		MessageBox(_T("No open video£¡"), _T("Waring"), MB_ICONEXCLAMATION);
 		return;
 	}
 	SetTimer(1, 25, NULL);
@@ -303,12 +303,12 @@ void CBehavMFCDlg::OnBnClickedBsave()
 	//release $writer
 	if (!Capture)
 	{
-		MessageBox(_T("No open video£¡\n-->Open"));
+		MessageBox(_T("No open video£¡\n-->Open"), _T("Waring"), MB_ICONEXCLAMATION);
 		return;
 	}
 	if (choose == "Local")
 	{
-		MessageBox(_T("It is local video£¡\n-->Camera"));
+		MessageBox(_T("It is local video£¡\n-->Camera"), _T("Waring"), MB_ICONEXCLAMATION);
 		return;
 	}
 	if (writer)
@@ -323,7 +323,7 @@ void CBehavMFCDlg::OnBnClickedBsavedone()
 {
 	if (!writer)
 	{
-		MessageBox(_T("Not saving£¡\n-->SaveBegin"));
+		MessageBox(_T("Not saving£¡\n-->SaveBegin"), _T("Waring"), MB_ICONEXCLAMATION);
 		return;
 	}
 	cvReleaseVideoWriter(&writer);
@@ -341,7 +341,7 @@ void CBehavMFCDlg::OnBnClickedCatch()
 	m_grabframe = frame;
 	if (m_grabframe == 0)
 	{
-		MessageBox(_T("No frame!"));
+		MessageBox(_T("No frame!"), _T("Waring"), MB_ICONEXCLAMATION);
 		return;
 	}
 	//CString ImagePath = TEXT("MyOutput/CatchedPictures/");
