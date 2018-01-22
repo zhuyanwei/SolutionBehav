@@ -36,7 +36,41 @@ void CBehavMFCDlg::DoDataExchange(CDataExchange* pDX)
 {
 	CDialogEx::DoDataExchange(pDX);
 }
+//*********************************************************************************************************status bar
+void CBehavMFCDlg::initStatus()
+{
+	//初始化状态栏，将状态栏设置为三列，前两列固定显示内容，第三列实时显示时间
+	static UINT BASED_CODE indicators[] = {
+		IDS_STATUS_0,
+		IDS_STATUS_1
+	};
+	m_bar.Create(this);
+	m_bar.SetIndicators(indicators, 3);
+	GetClientRect(&rectStatus);            //获取当前对话框的宽度
+	CString str1;
+	sysTime = CTime::GetCurrentTime();
+	str1 = sysTime.Format("%Y年%m月%d日 %H:%M:%S");
+	//设置状态栏前两列显示内容。使用函数为SetPaneInfo（第几列，手工添加的StringTable（相当于字符串常量，等同于宏定义一个ID 代表某一字符串），显示风格，显示宽度）
+	m_bar.SetPaneInfo(0, IDS_STATUS_0, SBPS_POPOUT, rectStatus.Width() / 3);
+	m_bar.SetPaneInfo(1, IDS_STATUS_1, SBPS_POPOUT, rectStatus.Width() / 3);
+	//第三列显示时间
+	m_bar.SetPaneText(2, str1, 1);
+	//设置状态栏填充颜色
+	m_bar.GetStatusBarCtrl().SetBkColor(RGB(180, 180, 180));
+	//启动定时器，SetTimer（ID，间隔时间，窗口句柄（NULL时为默认））
+	SetTimer(TIMER_STATUS, 1000, NULL);
+	RepositionBars(AFX_IDW_CONTROLBAR_FIRST, AFX_IDW_CONTROLBAR_LAST, AFX_IDW_CONTROLBAR_FIRST);
+}
 
+void CBehavMFCDlg::showTime()
+{
+	CString str1;
+	//获取系统时间，并进行显示
+	sysTime = CTime::GetCurrentTime();
+	str1 = sysTime.Format("%Y年%m月%d日 %H:%M:%S");
+	//在状态栏的第三个列上显示时间
+	m_bar.SetPaneText(2, str1);
+}
 //****************************************************************************************************************map 
 BEGIN_MESSAGE_MAP(CBehavMFCDlg, CDialogEx)
 	ON_WM_SYSCOMMAND()
@@ -82,6 +116,8 @@ BOOL CBehavMFCDlg::OnInitDialog()
 	SetIcon(m_hIcon, TRUE);			// 设置大图标
 	SetIcon(m_hIcon, FALSE);		// 设置小图标
 	// TODO:  在此添加额外的初始化代码
+	//init status bar
+	initStatus();
 	//default choice
 	CButton* radio = (CButton*)GetDlgItem(IDC_RCamera);
 	radio->SetCheck(1);
@@ -140,17 +176,35 @@ HCURSOR CBehavMFCDlg::OnQueryDragIcon()
 //***************************************************************************************************DIY hander
 void CBehavMFCDlg::OnTimer(UINT_PTR nIDEvent)
 {
-	pDC = GetDlgItem(IDC_Camera)->GetDC();
-	GetDlgItem(IDC_Camera)->GetClientRect(&rect);
-	hDC = pDC->GetSafeHdc();//获取显示控件的句柄
+	if (nIDEvent == TIMER_STATUS)
+	{
+		showTime();
+	}
+	if (nIDEvent == TIMER_FPS)
+	{
+		pDC = GetDlgItem(IDC_Camera)->GetDC();
+		GetDlgItem(IDC_Camera)->GetClientRect(&rect);
+		hDC = pDC->GetSafeHdc();//获取显示控件的句柄
 
-	frame = cvQueryFrame(Capture); //从摄像头或者文件中抓取并返回一帧
-	CvvImage m_CvvImage;
-	m_CvvImage.CopyOf(frame, 1); //复制该帧图像   
-	m_CvvImage.DrawToHDC(hDC, &rect); //显示到设备的矩形框内
+		frame = cvQueryFrame(Capture); //从摄像头或者文件中抓取并返回一帧
+		CvvImage m_CvvImage;
+		m_CvvImage.CopyOf(frame, 1); //复制该帧图像   
+		m_CvvImage.DrawToHDC(hDC, &rect); //显示到设备的矩形框内
+		//save video
+		if (writer)
+			cvWriteFrame(writer, frame);
+	}
+	if (nIDEvent == TIMER_SAVE)
+	{
+		CString str1;
+		//获取系统时间，并进行显示
+		sysTime = CTime::GetCurrentTime();
+		str1 = sysTime.Format("%H:%M:%S");
+
+		m_bar.SetPaneText(1, str1);
+	}
+
 	CDialogEx::OnTimer(nIDEvent);
-	//save video
-	cvWriteFrame(writer, frame);
 }
 
 void CBehavMFCDlg::OnDestroy()
@@ -162,7 +216,9 @@ void CBehavMFCDlg::OnDestroy()
 		cvReleaseCapture(&Capture);
 	if (writer)
 		cvReleaseVideoWriter(&writer);
-	KillTimer(1);
+	KillTimer(TIMER_FPS);
+	KillTimer(TIMER_STATUS);
+	KillTimer(TIMER_SAVE);
 }
 
 //**********************************************************************************************************buttons
@@ -208,7 +264,7 @@ void CBehavMFCDlg::OnBnClickedOpen()
 	//judge $choose
 	if (choose == "Camera")
 	{
-		Capture = cvCreateCameraCapture(0);
+		Capture = cvCreateCameraCapture(CAMERA_ID);
 		if (Capture == 0)
 		{
 			MessageBox(_T("Can't open camera!"), _T("Waring"), MB_ICONEXCLAMATION);
@@ -317,10 +373,19 @@ void CBehavMFCDlg::OnBnClickedBsave()
 		return;
 	}
 	if (writer)
-		cvReleaseVideoWriter(&writer);
+	{
+		MessageBox(_T("It is already saving！"), _T("Waring"), MB_ICONEXCLAMATION);
+		return;
+	}
+	//set status bar
+	CString str1;
+	str1.Format(_T("Now saving..."));
+	m_bar.SetPaneText(0, str1);
+	SetTimer(TIMER_SAVE, 1000, NULL);
+
 	char VideosName[100];
-	ImgNum = ImgNum + 1;
-	sprintf_s(VideosName, "%s%.2d%s", "MyOutput/SavedVideos/", ImgNum, ".avi");
+	VidNum = VidNum + 1;
+	sprintf_s(VideosName, "%s%.2d%s", "MyOutput/SavedVideos/", VidNum, ".avi");
 	writer = cvCreateVideoWriter(VideosName, CV_FOURCC('X', 'V', 'I', 'D'), FPS, cvSize(VIDEO_WIDTH, VIDEO_HEIGHT));
 }
 
@@ -374,10 +439,18 @@ void CBehavMFCDlg::OnBnClickedCatch()
 
 void CBehavMFCDlg::OnBnClickedProcess()
 {
-	//获取对话框上的句柄 图片控件ID  
-	CStatic *p = (CStatic *)GetDlgItem(IDC_Back);
-	//设置静态控件窗口风格为位图居中显示  
-	p->MoveWindow(500,500,100,100);
+	CString str1;
+	str1.Format(_T("yyyyyaaaano1"));
+	m_bar.SetPaneText(1, str1);
+
+	////get frame info
+	//CString cstr;
+	//cstr.Format(_T("w-%d,h-%d"), frame->width, frame->height);
+	//MessageBox(cstr);
+	////获取对话框上的句柄 图片控件ID  
+	//CStatic *p = (CStatic *)GetDlgItem(IDC_Back);
+	////设置静态控件窗口风格为位图居中显示  
+	//p->MoveWindow(500,500,100,100);
 	//p->ModifyStyle(0xf, SS_BITMAP | SS_CENTERIMAGE);
 	////将图片设置到Picture控件上  
 	//p->SetBitmap(bitmap);

@@ -2,10 +2,17 @@
 #include <opencv2\opencv.hpp>
 #include "ClassCV\CvvImage.h"
 
+//camera
+#define CAMERA_ID 1
+//video
 #define FPS 25
+#define IMAGE_CHANNELS 3
 #define VIDEO_WIDTH 640
 #define VIDEO_HEIGHT 480
-#define IMAGE_CHANNELS 3
+//timer
+#define TIMER_FPS 1
+#define TIMER_STATUS 2
+#define TIMER_SAVE 3
 
 using namespace cv;
 using namespace std;
@@ -25,13 +32,19 @@ protected:
 	afx_msg HCURSOR OnQueryDragIcon();
 	DECLARE_MESSAGE_MAP()
 public:
+	//main logic
 	CString choose;
 	int ImgNum = 0;
 	int VidNum = 0;
+	//status bar
+	CTime sysTime;
+	void showTime();
+	void initStatus();
+	CStatusBar m_bar;
+	CRect rectStatus; 
 	//handers
 	afx_msg void OnTimer(UINT_PTR nIDEvent);
 	afx_msg void OnDestroy();
-
 	afx_msg void OnBnClickedRCamera();
 	afx_msg void OnBnClickedRLocal();
 	afx_msg void OnBnClickedOpen();
