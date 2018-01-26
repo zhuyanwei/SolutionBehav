@@ -198,8 +198,9 @@ void CBehavMFCDlg::OnTimer(UINT_PTR nIDEvent)
 	{
 		CString str1;
 		//获取系统时间，并进行显示
-		sysTime = CTime::GetCurrentTime();
-		str1 = sysTime.Format("%H:%M:%S");
+		timeEnd = CTime::GetCurrentTime();
+		CTimeSpan timeBet = timeEnd - timeBegin;
+		str1 = timeBet.Format("%H:%M:%S");
 
 		m_bar.SetPaneText(1, str1);
 	}
@@ -378,6 +379,7 @@ void CBehavMFCDlg::OnBnClickedBsave()
 		return;
 	}
 	//set status bar
+	timeBegin = CTime::GetCurrentTime();
 	CString str1;
 	str1.Format(_T("Now saving..."));
 	m_bar.SetPaneText(0, str1);
@@ -397,6 +399,12 @@ void CBehavMFCDlg::OnBnClickedBsavedone()
 		return;
 	}
 	cvReleaseVideoWriter(&writer);
+	KillTimer(TIMER_SAVE);
+	strTemp.Format(_T("Ready"));
+	m_bar.SetPaneText(0, strTemp);
+	strTemp.Format(_T("."));
+	m_bar.SetPaneText(1, strTemp);
+
 	//char VideosName[100];
 	//ImgNum = ImgNum + 1;
 	//sprintf_s(VideosName, "%s%.2d%s", "MyOutput/CatchedPictures/", ImgNum, ".avi");
@@ -428,6 +436,8 @@ void CBehavMFCDlg::OnBnClickedCatch()
 	IplImage* m_snap = cvCreateImage(cvGetSize(m_grabframe), m_grabframe->depth, m_grabframe->nChannels);
 	cvCopy(m_grabframe, m_snap, NULL);
 	cvSaveImage(ImagesName, m_snap);
+	MessageBox(_T("Picture get."), _T("Complete"), MB_ICONASTERISK);
+
 	////show Catshedpic in the rect
 	//pDC = GetDlgItem(IDC_Picture)->GetDC();
 	//GetDlgItem(IDC_Picture)->GetClientRect(&rect);

@@ -38,6 +38,10 @@ public:
 	int VidNum = 0;
 	//status bar
 	CTime sysTime;
+	CTime timeBegin;
+	CTime timeEnd;
+	CString strTemp;
+
 	void showTime();
 	void initStatus();
 	CStatusBar m_bar;
