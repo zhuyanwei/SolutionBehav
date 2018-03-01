@@ -7,6 +7,7 @@
 #include "MyAlgorithm\Background\DiffThree2.h"
 #include "MyAlgorithm\Background\BackAver.h"
 #include "MyAlgorithm\Background\ViBe_BGS.h"
+#include "MyAlgorithm\Background\FlowColor.h"
 //***********************************************
 //timer
 #define TIMER_FPS 1
