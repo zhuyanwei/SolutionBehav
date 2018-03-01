@@ -449,10 +449,15 @@ void CBehavMFCDlg::OnBnClickedCatch()
 
 void CBehavMFCDlg::OnBnClickedProcess()
 {
-	CString str1;
-	str1.Format(_T("yyyyyaaaano1"));
-	m_bar.SetPaneText(1, str1);
+	DiffTwo df2;
+	DiffThree2 df3;
+	BackAver ba1;
+	//df2.funMain(MYPATH);
+	//df3.script(MYPATH);
+	ba1.funMain(MYPATH);
 
+	//ViBe_BGS v1;
+	//v1.script("MySrc/sample.avi");
 	////get frame info
 	//CString cstr;
 	//cstr.Format(_T("w-%d,h-%d"), frame->width, frame->height);

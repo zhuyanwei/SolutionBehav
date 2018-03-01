@@ -1,14 +1,13 @@
 #pragma once
+#include "GlobalSetting.h"
 #include <opencv2\opencv.hpp>
 #include "ClassCV\CvvImage.h"
-
-//camera
-#define CAMERA_ID 1
-//video
-#define FPS 25
-#define IMAGE_CHANNELS 3
-#define VIDEO_WIDTH 640
-#define VIDEO_HEIGHT 480
+//***********************************************
+#include "MyAlgorithm\Background\DiffTwo.h"
+#include "MyAlgorithm\Background\DiffThree2.h"
+#include "MyAlgorithm\Background\BackAver.h"
+#include "MyAlgorithm\Background\ViBe_BGS.h"
+//***********************************************
 //timer
 #define TIMER_FPS 1
 #define TIMER_STATUS 2
