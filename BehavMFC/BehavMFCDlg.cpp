@@ -454,7 +454,7 @@ void CBehavMFCDlg::OnBnClickedProcess()
 	BackAver ba1;
 	ViBe_BGS v1;
 	FlowColor f1;
-	f1.funMain(MYPATH);
+	ba1.funMain(MYPATH);
 
 	//df2.funMain(MYPATH);
 	//df3.script(MYPATH);

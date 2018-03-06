@@ -45,7 +45,27 @@ int BackAver::funMain(string fileName)
 		rawImage = cvQueryFrame(capture);
 	}
 	AllocateImages(rawImage);						//以第一帧图像分配图像大小		
-
+	//***************@J,set ROI
+	Mat roi1 = Mat(rawImage);
+	Mat dst1 = Mat::zeros(roi1.size(), roi1.type());
+	Mat mask1 = Mat::zeros(roi1.size(), CV_8U);
+	//circle
+	//Point circleCenter(mask1.cols / 2, mask1.rows / 2);
+	//int radius = min(mask1.cols, mask1.rows) / 2;
+	//circle(mask1, circleCenter, radius, Scalar(255), -1);
+	//multi rect
+	vector<vector<Point>> contour;
+	vector<Point> pts;
+	pts.push_back(Point(30, 60));
+	pts.push_back(Point(500, 60));
+	pts.push_back(Point(500, 450));
+	pts.push_back(Point(30, 450));
+	contour.push_back(pts);
+	drawContours(mask1, contour, 0, Scalar::all(255), -1);
+	//copy to mask
+	roi1.copyTo(dst1, mask1);
+	rawImage = &IplImage(dst1);
+	//********************
 	for (int i = 0;; i++)
 	{
 		if (i <= NUM_AVER)
@@ -69,7 +89,13 @@ int BackAver::funMain(string fileName)
 			break;
 		if (!(rawImage = cvQueryFrame(capture)))
 			break;
-		cvShowImage("raw", rawImage);				//显示源图像
+		drawContours(Mat(rawImage), contour, 0, Scalar::all(255), 1);
+		cvShowImage("raw", rawImage);	
+		//**********roi
+		roi1 = Mat(rawImage);
+		roi1.copyTo(dst1, mask1);
+		rawImage = &IplImage(dst1);
+		//************
 	}
 	DeallocateImages();								//撤销内存
 

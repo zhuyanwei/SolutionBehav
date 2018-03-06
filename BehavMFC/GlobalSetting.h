@@ -17,5 +17,5 @@
 #define NUM_AVER 100
 #define THR_HIGH 10.0
 #define THR_LOW 10.0
-#define THR_ALL 17.0
+#define THR_ALL 15.0
 
