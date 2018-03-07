@@ -3,11 +3,15 @@
 #include <opencv2\opencv.hpp>
 #include "ClassCV\CvvImage.h"
 //***********************************************
+//background
 #include "MyAlgorithm\Background\DiffTwo.h"
 #include "MyAlgorithm\Background\DiffThree2.h"
 #include "MyAlgorithm\Background\BackAver.h"
+#include "MyAlgorithm\Background\BackAver4.h"
 #include "MyAlgorithm\Background\ViBe_BGS.h"
 #include "MyAlgorithm\Background\FlowColor.h"
+//just temp
+#include "MyAlgorithm\JustTemp\Hog1.h"
 //***********************************************
 //timer
 #define TIMER_FPS 1

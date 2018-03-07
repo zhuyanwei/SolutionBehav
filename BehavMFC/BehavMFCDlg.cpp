@@ -452,9 +452,14 @@ void CBehavMFCDlg::OnBnClickedProcess()
 	DiffTwo df2;
 	DiffThree2 df3;
 	BackAver ba1;
+	BackAver4 ba4;
 	ViBe_BGS v1;
 	FlowColor f1;
-	ba1.funMain(MYPATH);
+	Hog1 h1;
+	ba4.funMain(MYPATH);
+
+	//ba1.funMain(MYPATH);
+	//ba4.funMain(MYPATH);
 
 	//df2.funMain(MYPATH);
 	//df3.script(MYPATH);

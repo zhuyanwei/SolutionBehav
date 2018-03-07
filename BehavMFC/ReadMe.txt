@@ -12,7 +12,7 @@
 一、背景提取
 1、二帧法(DiffTwo)：算法、滤波、时间
 2、三帧法(DiffThree2)：
-3、平均法(BackAver)
+3、平均法(BackAver,BackAver4):BackAver4黑白
 4、bgs(ViBe_BGS)
 5、光流法
 二、人数统计

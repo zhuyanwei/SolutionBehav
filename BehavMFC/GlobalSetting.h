@@ -1,8 +1,9 @@
 //this is setting
 
 //path
-#define MYPATH "MySrc/normal/one.avi"
-//#define MYPATH "MySrc/normal/one_two_three.avi"
+//#define MYPATH "MySrc/normal/one.avi"
+#define MYPATH "MySrc/normal/one_two_three.avi"
+#define MYPATHPIC "MySrc/cut2.PNG"
 
 //camera
 #define CAMERA_ID 1
@@ -17,5 +18,5 @@
 #define NUM_AVER 100
 #define THR_HIGH 10.0
 #define THR_LOW 10.0
-#define THR_ALL 15.0
+#define THR_ALL 25.0
 
