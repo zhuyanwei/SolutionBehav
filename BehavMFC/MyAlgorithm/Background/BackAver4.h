@@ -14,10 +14,14 @@ public:
 	BackAver4();
 	~BackAver4();
 	int funMain(string fileName);
+	//outputs
+	Mat out_ba4;
+	int out_num;
 private:
 	IplImage *Imask;
 	Mat mmask;
 
 	int process();
+	int cntpix(Mat matin);
 };
 

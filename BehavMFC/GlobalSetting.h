@@ -1,8 +1,8 @@
 //this is setting
 
 //path
-//#define MYPATH "MySrc/normal/one.avi"
-#define MYPATH "MySrc/normal/one_two_three.avi"
+#define MYPATH "MySrc/normal/one.avi"
+//#define MYPATH "MySrc/normal/one_two_three.avi"
 #define MYPATHPIC "MySrc/cut2.PNG"
 
 //camera

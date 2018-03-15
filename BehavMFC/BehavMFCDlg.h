@@ -75,4 +75,6 @@ public:
 	CDC *pDC;
 	HDC hDC;
 	CWnd *pwnd;
+private:
+	BackAver4 ba4;
 };

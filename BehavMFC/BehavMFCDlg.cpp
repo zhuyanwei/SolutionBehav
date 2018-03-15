@@ -52,7 +52,7 @@ void CBehavMFCDlg::initStatus()
 	str1 = sysTime.Format("%Y年%m月%d日 %H:%M:%S");
 	//设置状态栏前两列显示内容。使用函数为SetPaneInfo（第几列，手工添加的StringTable（相当于字符串常量，等同于宏定义一个ID 代表某一字符串），显示风格，显示宽度）
 	m_bar.SetPaneInfo(0, IDS_STATUS_0, SBPS_POPOUT, rectStatus.Width() / 3);
-	m_bar.SetPaneInfo(1, IDS_STATUS_1, SBPS_POPOUT, rectStatus.Width() / 3);
+	m_bar.SetPaneInfo(1, IDS_STATUS_1, SBPS_POPOUT, rectStatus.Width() / 3 - 100);
 	//第三列显示时间
 	m_bar.SetPaneText(2, str1, 1);
 	//设置状态栏填充颜色
@@ -68,7 +68,10 @@ void CBehavMFCDlg::showTime()
 	//获取系统时间，并进行显示
 	sysTime = CTime::GetCurrentTime();
 	str1 = sysTime.Format("%Y年%m月%d日 %H:%M:%S");
-	//在状态栏的第三个列上显示时间
+	//other showing
+	CString str2;
+	str2.Format(_T("--%d"), ba4.out_num);
+	str1 += str2;
 	m_bar.SetPaneText(2, str1);
 }
 //****************************************************************************************************************map 
@@ -452,7 +455,6 @@ void CBehavMFCDlg::OnBnClickedProcess()
 	DiffTwo df2;
 	DiffThree2 df3;
 	BackAver ba1;
-	BackAver4 ba4;
 	ViBe_BGS v1;
 	FlowColor f1;
 	Hog1 h1;

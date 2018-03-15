@@ -100,7 +100,28 @@ int BackAver4::process()
 	medianBlur(mmask, mmask, 3);
 	morphologyEx(mmask, mmask, MORPH_CLOSE, getStructuringElement(MORPH_RECT, Size(3, 3), Point(-1, -1)), Point(-1, -1), 2, BORDER_REPLICATE);
 	if (mmask.empty() == false)
+	{
 		imshow("process", mmask);
+		mmask.copyTo(out_ba4);
+		out_num = cntpix(mmask);
+	}
 
 	return 1;
 }
+
+int BackAver4::cntpix(Mat matin)
+{
+	int cnt = 0;
+	for (int i = 0; i < matin.rows; i++)
+	{
+		uchar* data = matin.ptr<uchar>(i);
+		for (int j = 0; j < matin.cols; j++)
+		{
+			if (data[j] != 0)
+				cnt++;
+		}
+	}
+	printf("%d*%d=%d\n", matin.rows, matin.cols,cnt);
+	return cnt;
+}
+
