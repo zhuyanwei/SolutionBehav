@@ -3,7 +3,9 @@
 //path
 #define MYPATH "MySrc/normal/one.avi"
 //#define MYPATH "MySrc/normal/one_two_three.avi"
-#define MYPATHPIC "MySrc/cut2.PNG"
+#define MYPATHPIC1 "MySrc/frame1.jpg"
+#define MYPATHPIC2 "MySrc/frame2.jpg"
+
 
 //camera
 #define CAMERA_ID 1

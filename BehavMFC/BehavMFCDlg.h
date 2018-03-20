@@ -10,6 +10,9 @@
 #include "MyAlgorithm\Background\BackAver4.h"
 #include "MyAlgorithm\Background\ViBe_BGS.h"
 #include "MyAlgorithm\Background\FlowColor.h"
+//count
+//violent
+#include "MyAlgorithm\Violent\FlowLKImg.h"
 //just temp
 #include "MyAlgorithm\JustTemp\Hog1.h"
 //***********************************************
@@ -76,5 +79,7 @@ public:
 	HDC hDC;
 	CWnd *pwnd;
 private:
+	//algorithm
 	BackAver4 ba4;
+	FlowLKImg flk;
 };

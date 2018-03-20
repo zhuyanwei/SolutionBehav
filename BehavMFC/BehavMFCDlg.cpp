@@ -452,20 +452,11 @@ void CBehavMFCDlg::OnBnClickedCatch()
 
 void CBehavMFCDlg::OnBnClickedProcess()
 {
-	DiffTwo df2;
-	DiffThree2 df3;
-	BackAver ba1;
-	ViBe_BGS v1;
-	FlowColor f1;
-	Hog1 h1;
 	ba4.funMain(MYPATH);
 
-	//ba1.funMain(MYPATH);
-	//ba4.funMain(MYPATH);
-
-	//df2.funMain(MYPATH);
-	//df3.script(MYPATH);
-	//ba1.funMain(MYPATH);
+	//Mat m1 = imread(MYPATHPIC1);
+	//Mat m2 = imread(MYPATHPIC2);
+	//flk.funMain(m1, m2);
 
 	//ViBe_BGS v1;
 	//v1.script("MySrc/sample.avi");
