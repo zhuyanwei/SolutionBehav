@@ -10,6 +10,7 @@ BackAver4::~BackAver4()
 
 int BackAver4::funMain(string fileName)
 {
+	//open camera
 	CvCapture* capture;
 	if (fileName == "00")
 	{
@@ -31,7 +32,7 @@ int BackAver4::funMain(string fileName)
 		cvWaitKey(1000);
 		myImg = cvQueryFrame(capture);
 	}
-
+	//allocate
 	CvSize img_sz = cvGetSize(myImg);
 	IplImage *pic;
 	IplImage *frame = cvCreateImage(img_sz, 8, 1);
@@ -45,25 +46,34 @@ int BackAver4::funMain(string fileName)
 	IplImage *IdiffF = cvCreateImage(img_sz, IPL_DEPTH_32F, 1);
 	IplImage *IhiF = cvCreateImage(img_sz, IPL_DEPTH_32F, 1);
 	IplImage *IlowF = cvCreateImage(img_sz, IPL_DEPTH_32F, 1);
+	//edge part
+	IplImage *edgeIn = cvCreateImage(img_sz, 8, 1);
+	IplImage *edgeOut = cvCreateImage(img_sz, 8, 1);
+	//numbers
 	int fnum = 1, Icount = NUM_AVER;
 	cvZero(IavgF); cvZero(Iscratch); cvZero(IpreF); cvZero(Iscratch2); cvZero(IdiffF);
-
+	//creat background
 	while (fnum <= Icount)
 	{
+		//get origin and gray
 		pic = cvQueryFrame(capture);
 		if (!pic) 
 			break;
-		if (pic->depth != 1)
+		if (pic->nChannels != 1)
 			cvCvtColor(pic, frame, CV_BGR2GRAY);
-		//cvSmooth(frame, framedn, CV_BLUR, 15);
-		//cvCvtScale(framedn, Iscratch, 1.0, 0);
-		cvCvtScale(frame, Iscratch, 1.0, 0);
+		//edge
+		cvCvtScale(frame, edgeIn);
+		e1.funMain("can", edgeIn, edgeOut);
+		//acculate
+		cvCvtScale(edgeOut, Iscratch, 1.0, 0);
 		cvAcc(Iscratch, IavgF);
 		cvAbsDiff(Iscratch, IpreF, Iscratch2);
 		cvAcc(Iscratch2, IdiffF);
 		cvCopy(Iscratch, IpreF);
 		cout << fnum << '\n';
 		fnum++;
+		//if (cvWaitKey(CVWAIT) == 'q')
+		//	break;
 	}
 	cvConvertScale(IavgF, IavgF, (double)(1.0 / (Icount)));   /*均值*/
 	cvConvertScale(IdiffF, IdiffF, (double)(1.0 / (Icount)));  /*帧间插值*/
@@ -71,29 +81,40 @@ int BackAver4::funMain(string fileName)
 	cvConvertScale(IdiffF, Iscratch, THR_ALL); /*high threshold = low threshold*/
 	cvAdd(IavgF, Iscratch, IhiF);
 	cvSub(IavgF, Iscratch, IlowF);
+	//cvShowImage("Background", IavgF);
 	cout << "background done" << '\n';
+	//do sub
 	while (true)
 	{
+		//get and gray
 		pic = cvQueryFrame(capture);
 		if (!pic) 
 			break;
-		if (pic->depth != 1)
+		if (pic->nChannels != 1)
 			cvCvtColor(pic, frame, CV_BGR2GRAY);
-		//cvSmooth(frame, framedn, CV_BLUR, 15);
-		//cvCvtScale(framedn, Iscratch, 1.0, 0);
-		cvCvtScale(frame, Iscratch, 1.0, 0);
+		//edge
+		cvCvtScale(frame, edgeIn);
+		e1.funMain("can",edgeIn,edgeOut);
+		//do range
+		cvCvtScale(edgeOut,Iscratch);
 		cvInRange(Iscratch, IlowF, IhiF, Imask);
 		cvSubRS(Imask, cvScalar(255), Imask);
-		process();
+		////smooth open&close
+		//process();
+
+		////flk process
+		//if (flkMat1.empty() == false && flkMat2.empty() == false)
+		//	flk.funMain(flkMat1, flkMat1);
 		cvShowImage("mask", Imask);
 		cvShowImage("frame", frame);
 		if (cvWaitKey(CVWAIT) == 'q')
 			break;
 	}
+	//flk.releasePara();
 	return 1;
 }
 
-int BackAver4::process()
+int BackAver4::process_common()
 {
 	Mat tmp(Imask);
 	tmp.copyTo(mmask);
@@ -102,8 +123,12 @@ int BackAver4::process()
 	if (mmask.empty() == false)
 	{
 		imshow("process", mmask);
-		mmask.copyTo(out_ba4);
-		out_num = cntpix(mmask);
+		//mmask.copyTo(out_ba4);
+		////get flk
+		//flkMat2.copyTo(flkMat1);
+		//mmask.copyTo(flkMat2);
+		////cnt
+		//out_num = cntpix(mmask);
 	}
 
 	return 1;

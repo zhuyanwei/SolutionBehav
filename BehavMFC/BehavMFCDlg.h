@@ -10,6 +10,7 @@
 #include "MyAlgorithm\Background\BackAver4.h"
 #include "MyAlgorithm\Background\ViBe_BGS.h"
 #include "MyAlgorithm\Background\FlowColor.h"
+#include "MyAlgorithm\Background\Edge.h"
 //count
 //violent
 #include "MyAlgorithm\Violent\FlowLKImg.h"

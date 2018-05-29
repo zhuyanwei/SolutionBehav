@@ -454,9 +454,13 @@ void CBehavMFCDlg::OnBnClickedProcess()
 {
 	ba4.funMain(MYPATH);
 
-	//Mat m1 = imread(MYPATHPIC1);
-	//Mat m2 = imread(MYPATHPIC2);
-	//flk.funMain(m1, m2);
+	//Edge e1;
+	//IplImage* m1, *m2;
+	//m1 = cvLoadImage("MySrc/frame1.jpg");
+	//m2 = cvCreateImage(cvSize(m1->width, m1->height), 8, 1);
+	////m1 = imread("MySrc/frame1.jpg");
+	//e1.funMain("can", m1, m2);
+	//cvShowImage("rr", m2);
 
 	//ViBe_BGS v1;
 	//v1.script("MySrc/sample.avi");

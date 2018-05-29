@@ -1,10 +1,14 @@
 //para:filename;number of sum;low thread;high thread;blur para;
 // background average ,a more simple one,website with some explanation.more clear,use only one channel,gassion blur
 //http://blog.csdn.net/mingtian715/article/details/53008316
+//*********************
+//*********************this contains the whole thread loop
 #pragma once
 #include <opencv2\opencv.hpp>
 #include <iostream>
 #include "../../GlobalSetting.h"
+#include "../Violent/FlowLKImg.h"
+#include "Edge.h"
 using namespace std;
 using namespace cv;
 
@@ -21,7 +25,13 @@ private:
 	IplImage *Imask;
 	Mat mmask;
 
-	int process();
+	int process_common();
 	int cntpix(Mat matin);
+	//algorithm
+	//edge
+	Edge e1;
+	//flk
+	FlowLKImg flk;
+	Mat flkMat1, flkMat2;
 };
 

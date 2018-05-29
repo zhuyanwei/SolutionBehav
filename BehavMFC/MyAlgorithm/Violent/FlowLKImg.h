@@ -16,7 +16,23 @@ public:
 	FlowLKImg();
 	~FlowLKImg();
 	int funMain(Mat mat1,Mat mat2);
+	int releasePara();
 	//outputs
 	float out_lkValue;
+private:
+	//local para to release
+	Mat mat3;
+	IplImage* imgA;
+	IplImage* imgB;
+	CvSize img_sz;
+	IplImage* imgC;
+	IplImage* eig_image;
+	IplImage* tmp_image;
+	CvPoint2D32f* cornersA;
+	CvSize pyr_sz;
+	IplImage* pyrA;
+	IplImage* pyrB;
+	CvPoint2D32f* cornersB;
+	Mat tmp;
 };
 

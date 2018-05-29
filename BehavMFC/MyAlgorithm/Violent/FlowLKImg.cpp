@@ -21,25 +21,24 @@ int FlowLKImg::funMain(Mat mat1, Mat mat2)
 
 	//@J interface,mat to iplimage
 	out_lkValue = 0.0;
-	Mat mat3;
 	mat2.copyTo(mat3);
 	if (mat1.channels() != 1)
 		cvtColor(mat1, mat1, CV_BGR2GRAY);
 	if (mat2.channels() != 1)
 		cvtColor(mat2, mat2, CV_BGR2GRAY);
-	IplImage* imgA = &IplImage(mat1);
-	IplImage* imgB = &IplImage(mat2);
-	CvSize img_sz = cvGetSize(imgA);
+	imgA = &IplImage(mat1);
+	imgB = &IplImage(mat2);
+	img_sz = cvGetSize(imgA);
 	//show on the second original pic
-	IplImage* imgC = &IplImage(mat3);
+	imgC = &IplImage(mat3);
 
 	int win_size = 10;//窗口尺寸
 	// The first thing we need to do is get the features
 	// we want to track.
-	IplImage* eig_image = cvCreateImage(img_sz, IPL_DEPTH_32F, 1);
-	IplImage* tmp_image = cvCreateImage(img_sz, IPL_DEPTH_32F, 1);//临时变量
+	eig_image = cvCreateImage(img_sz, IPL_DEPTH_32F, 1);
+	tmp_image = cvCreateImage(img_sz, IPL_DEPTH_32F, 1);//临时变量
 	int corner_count = MAX_CORNERS;//跟踪点的数目
-	CvPoint2D32f* cornersA = new CvPoint2D32f[MAX_CORNERS];//缓存
+	cornersA = new CvPoint2D32f[MAX_CORNERS];//缓存
 
 	cvGoodFeaturesToTrack(
 		imgA,//the input image
@@ -66,11 +65,11 @@ int FlowLKImg::funMain(Mat mat1, Mat mat2)
 	// Call the Lucas Kanade algorithm
 	char features_found[MAX_CORNERS];
 	float feature_errors[MAX_CORNERS];
-	CvSize pyr_sz = cvSize(imgA->width + 8, imgB->height / 3);
+	pyr_sz = cvSize(imgA->width + 8, imgB->height / 3);
 
-	IplImage* pyrA = cvCreateImage(pyr_sz, IPL_DEPTH_32F, 1);
-	IplImage* pyrB = cvCreateImage(pyr_sz, IPL_DEPTH_32F, 1);
-	CvPoint2D32f* cornersB = new CvPoint2D32f[MAX_CORNERS];
+	pyrA = cvCreateImage(pyr_sz, IPL_DEPTH_32F, 1);
+	pyrB = cvCreateImage(pyr_sz, IPL_DEPTH_32F, 1);
+	cornersB = new CvPoint2D32f[MAX_CORNERS];
 	//金字塔lk光流算法
 	cvCalcOpticalFlowPyrLK(
 		imgA,
@@ -88,7 +87,7 @@ int FlowLKImg::funMain(Mat mat1, Mat mat2)
 		0
 		);
 	// Now make some image of what we are looking at:
-	Mat tmp = Mat(imgC, true);
+	tmp = Mat(imgC, true);
 	for (int i = 0; i<corner_count; i++)
 	{
 		if (features_found[i] == 0 || feature_errors[i]>550)
@@ -104,16 +103,29 @@ int FlowLKImg::funMain(Mat mat1, Mat mat2)
 		arrowedLine(tmp, p0, p1, CV_RGB(255, 0, 0), 2);
 	}
 	printf("Value is %f\n", out_lkValue);
-	cvNamedWindow("ImageA", 0);
-	cvNamedWindow("ImageB", 0);
-	cvNamedWindow("LKpyr_OpticalFlow", 0);
-	cvShowImage("ImageA", imgA);
-	cvShowImage("ImageB", imgB);
-	cvShowImage("LKpyr_OpticalFlow", imgC);
+	//cvNamedWindow("ImageA", 0);
+	//cvNamedWindow("ImageB", 0);
+	//cvNamedWindow("LKpyr_OpticalFlow", 0);
+	//cvShowImage("ImageA", imgA);
+	//cvShowImage("ImageB", imgB);
+	//cvShowImage("LKpyr_OpticalFlow", imgC);
 	imshow("tmp", tmp);
 	//imwrite("arr.jpg", tmp);
 
 	cout << "done";
-	cvWaitKey(0);
+	//cvWaitKey(CVWAIT);
 	return 0;
+}
+
+int FlowLKImg::releasePara()
+{
+	cvReleaseImage(&imgA);
+	cvReleaseImage(&imgB);
+	cvReleaseImage(&imgC);
+	cvReleaseImage(&eig_image);
+	cvReleaseImage(&tmp_image);
+	cvReleaseImage(&pyrA);
+	cvReleaseImage(&pyrB);
+
+	return 1;
 }
