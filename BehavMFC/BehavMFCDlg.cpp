@@ -452,7 +452,7 @@ void CBehavMFCDlg::OnBnClickedCatch()
 
 void CBehavMFCDlg::OnBnClickedProcess()
 {
-	ba4.funMain(MYPATH);
+	//ba4.funMain(MYPATH);
 
 	//Edge e1;
 	//IplImage* m1, *m2;
@@ -462,8 +462,11 @@ void CBehavMFCDlg::OnBnClickedProcess()
 	//e1.funMain("can", m1, m2);
 	//cvShowImage("rr", m2);
 
+	HunGao1 hg1;
+	hg1.funMain(MYPATHSAMPLE);
+
 	//ViBe_BGS v1;
-	//v1.script("MySrc/sample.avi");
+	//v1.script(MYPATHSAMPLE);
 	////get frame info
 	//CString cstr;
 	//cstr.Format(_T("w-%d,h-%d"), frame->width, frame->height);

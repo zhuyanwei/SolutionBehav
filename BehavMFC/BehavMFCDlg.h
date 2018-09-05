@@ -1,4 +1,5 @@
 #pragma once
+
 #include "GlobalSetting.h"
 #include <opencv2\opencv.hpp>
 #include "ClassCV\CvvImage.h"
@@ -11,6 +12,8 @@
 #include "MyAlgorithm\Background\ViBe_BGS.h"
 #include "MyAlgorithm\Background\FlowColor.h"
 #include "MyAlgorithm\Background\Edge.h"
+#include "MyAlgorithm\Background\DanGao1.h"
+#include "MyAlgorithm\Background\HunGao1.h"
 //count
 //violent
 #include "MyAlgorithm\Violent\FlowLKImg.h"

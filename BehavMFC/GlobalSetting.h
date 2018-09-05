@@ -3,6 +3,7 @@
 //path
 #define MYPATH "MySrc/ele_proc/one.avi"
 //#define MYPATH "MySrc/normal/one_two_three.avi"
+#define MYPATHSAMPLE "MySrc/sample.avi"
 #define MYPATHPIC1 "MySrc/frame1.jpg"
 #define MYPATHPIC2 "MySrc/frame2.jpg"
 

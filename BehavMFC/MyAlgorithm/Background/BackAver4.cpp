@@ -26,6 +26,7 @@ int BackAver4::funMain(string fileName)
 		printf("Couldn't Open the file or camera");
 		return -1;
 	}
+
 	IplImage *myImg = cvQueryFrame(capture);
 	while (myImg == NULL)
 	{
