@@ -14,6 +14,8 @@
 #include "MyAlgorithm\Background\Edge.h"
 #include "MyAlgorithm\Background\DanGao1.h"
 #include "MyAlgorithm\Background\HunGao1.h"
+#include "MyAlgorithm\Background\HunGao2.h"
+
 //count
 //violent
 #include "MyAlgorithm\Violent\FlowLKImg.h"

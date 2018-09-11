@@ -462,8 +462,11 @@ void CBehavMFCDlg::OnBnClickedProcess()
 	//e1.funMain("can", m1, m2);
 	//cvShowImage("rr", m2);
 
-	HunGao1 hg1;
-	hg1.funMain(MYPATHSAMPLE);
+	//HunGao1 hg1;
+	//hg1.funMain(MYPATHSAMPLE);
+	HunGao2 hg2;
+	hg2.funMain(MYPATHSAMPLE);
+
 
 	//ViBe_BGS v1;
 	//v1.script(MYPATHSAMPLE);
