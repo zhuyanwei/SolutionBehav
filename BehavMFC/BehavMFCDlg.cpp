@@ -452,24 +452,77 @@ void CBehavMFCDlg::OnBnClickedCatch()
 
 void CBehavMFCDlg::OnBnClickedProcess()
 {
+	//**************************
+	//*****************experiment:edge
+	Mat m1, mout, m2Roberts, m2Prewitt, m2Sobel, m2Laplacian, m2Kirsch, m2Canny;
+	double TRoberts, TPrewitt, TSobel, TLaplacian, TKirsch, TCanny;
+	m1 = imread(PATH_EDGE);
+
+	TRoberts = static_cast<double>(getTickCount());
+	m2Roberts = myEdge.myRoberts(m1);
+	TRoberts = static_cast<double>(getTickCount()) - TRoberts;
+	TRoberts /= getTickFrequency();
+
+	TPrewitt = static_cast<double>(getTickCount());
+	m2Prewitt = myEdge.myPrewitt(m1);
+	TPrewitt = static_cast<double>(getTickCount()) - TPrewitt;
+	TPrewitt /= getTickFrequency();
+
+	TSobel = static_cast<double>(getTickCount());
+	m2Sobel = myEdge.funMain("sob", m1, mout);
+	TSobel = static_cast<double>(getTickCount()) - TSobel;
+	TSobel /= getTickFrequency();
+
+	TLaplacian = static_cast<double>(getTickCount());
+	m2Laplacian = myEdge.funMain("lap", m1, mout);
+	TLaplacian = static_cast<double>(getTickCount()) - TLaplacian;
+	TLaplacian /= getTickFrequency();
+
+	TCanny = static_cast<double>(getTickCount());
+	m2Canny = myEdge.funMain("can", m1, mout);
+	TCanny = static_cast<double>(getTickCount()) - TCanny;
+	TCanny /= getTickFrequency();
+
+	//myKirsch usage
+	IplImage *mk1, *mk2, *mk3;
+	mk1 = cvLoadImage(PATH_EDGE);
+	mk2 = cvCreateImage(cvSize(mk1->width, mk1->height), IPL_DEPTH_8U, 1);
+	mk3 = cvCreateImage(cvSize(mk1->width, mk1->height), IPL_DEPTH_8U, 1);	
+	TKirsch = static_cast<double>(getTickCount());
+	cvCvtColor(mk1, mk2, CV_BGR2GRAY);
+	myEdge.myKirsch(mk2, mk3);
+	TKirsch = static_cast<double>(getTickCount()) - TKirsch;
+	TKirsch /= getTickFrequency();
+
+	//output
+	imwrite("MyOutput/ExperimentEdge/ori.jpg", m1);
+	imwrite("MyOutput/ExperimentEdge/aftRoberts.jpg", m2Roberts);
+	imwrite("MyOutput/ExperimentEdge/aftPrewitt.jpg", m2Prewitt);
+	imwrite("MyOutput/ExperimentEdge/aftSobel.jpg", m2Sobel);
+	imwrite("MyOutput/ExperimentEdge/aftLaplacian.jpg", m2Laplacian);
+	imwrite("MyOutput/ExperimentEdge/aftCanny.jpg", m2Canny);
+	imshow("ori", m1);
+	imshow("aftRoberts", m2Roberts);
+	imshow("aftPrewitt", m2Prewitt);
+	imshow("aftSobel", m2Sobel);
+	imshow("aftLaplacian", m2Laplacian);
+	imshow("aftCanny", m2Canny);
+	cout << "Roberts:" << TRoberts << '\n'
+		<< "Prewitt:" << TPrewitt << '\n'
+		<< "Sobel:" << TSobel << '\n'
+		<< "Laplacian:" << TLaplacian << '\n'
+		<< "Kirsch:" << TKirsch << '\n'
+		<< "Canny:" << TCanny << '\n';
+	cout << "experiment:edge--------------done" << '\n';
+	//**************************************
+	//***************************************
+
 	//ba4.funMain(MYPATH);
-
-	//Edge e1;
-	//IplImage* m1, *m2;
-	//m1 = cvLoadImage("MySrc/frame1.jpg");
-	//m2 = cvCreateImage(cvSize(m1->width, m1->height), 8, 1);
-	////m1 = imread("MySrc/frame1.jpg");
-	//e1.funMain("can", m1, m2);
-	//cvShowImage("rr", m2);
-
-	//HunGao1 hg1;
-	//hg1.funMain(MYPATHSAMPLE);
-	HunGao2 hg2;
-	hg2.funMain(MYPATHSAMPLE);
 
 
 	//ViBe_BGS v1;
 	//v1.script(MYPATHSAMPLE);
+	
 	////get frame info
 	//CString cstr;
 	//cstr.Format(_T("w-%d,h-%d"), frame->width, frame->height);
@@ -494,9 +547,6 @@ void CBehavMFCDlg::OnBnClickedProcess()
 	//cvCanny(gray, edge, 30, 100, 3);
 	//cvCvtColor(edge, TheImage, CV_GRAY2BGR);
 	//ShowImage(TheImage, IDC_ShowImg);            // 调用显示图片函数
-
-	//cvReleaseImage(&gray);
-	//cvReleaseImage(&edge);
 }
 
 //**************************************************************************************************assistant moduels

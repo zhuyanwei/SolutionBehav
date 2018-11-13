@@ -86,6 +86,7 @@ public:
 	CWnd *pwnd;
 private:
 	//algorithm
+	Edge myEdge;
 	BackAver4 ba4;
 	FlowLKImg flk;
 };

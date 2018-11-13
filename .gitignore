@@ -8,6 +8,8 @@ ipch/
 *.aps
 *.user
 *.jpg
+*.avi
+*.mp4
 *.sln
 *.sdf
 *.suo

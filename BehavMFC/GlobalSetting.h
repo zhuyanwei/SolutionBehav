@@ -1,6 +1,9 @@
 //this is setting
 
-//path
+//**************************src path
+//experiment:edge
+#define PATH_EDGE "MySrc/threePeople.jpg"
+
 #define MYPATH "MySrc/ele_proc/one.avi"
 //#define MYPATH "MySrc/normal/one_two_three.avi"
 #define MYPATHSAMPLE "MySrc/sample.avi"

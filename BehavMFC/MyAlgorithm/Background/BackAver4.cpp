@@ -103,9 +103,9 @@ int BackAver4::funMain(string fileName)
 		////smooth open&close
 		//process();
 
-		////flk process
-		//if (flkMat1.empty() == false && flkMat2.empty() == false)
-		//	flk.funMain(flkMat1, flkMat1);
+		//flk process
+		if (flkMat1.empty() == false && flkMat2.empty() == false)
+			flk.funMain(flkMat1, flkMat1);
 		cvShowImage("mask", Imask);
 		cvShowImage("frame", frame);
 		if (cvWaitKey(CVWAIT) == 'q')
@@ -124,12 +124,12 @@ int BackAver4::process_common()
 	if (mmask.empty() == false)
 	{
 		imshow("process", mmask);
-		//mmask.copyTo(out_ba4);
-		////get flk
-		//flkMat2.copyTo(flkMat1);
-		//mmask.copyTo(flkMat2);
-		////cnt
-		//out_num = cntpix(mmask);
+		mmask.copyTo(out_ba4);
+		//get flk
+		flkMat2.copyTo(flkMat1);
+		mmask.copyTo(flkMat2);
+		//cnt
+		out_num = cntpix(mmask);
 	}
 
 	return 1;

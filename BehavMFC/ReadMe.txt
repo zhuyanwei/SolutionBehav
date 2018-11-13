@@ -39,8 +39,20 @@ frame process
 //read
 IplImage *m1, *m2;
 m1 = cvLoadImage("MySrc/frame1.jpg");
+m2 = cvCreateImage(cvSize(m1->width, m1->height), IPL_DEPTH_8U, 1);
 Mat m1, m2;
 m1 = imread("MySrc/frame1.jpg");
+
 //show
 cvShowImage("rr", m2);
 imshow("rr", m2);
+
+//change channel
+cvCvtColor(mframe, current, CV_BGR2GRAY);
+cvtColor(srcImage, srcImage, CV_BGR2GRAY);
+
+//deep clone
+Mat dstImage = srcImage.clone();
+
+
+
