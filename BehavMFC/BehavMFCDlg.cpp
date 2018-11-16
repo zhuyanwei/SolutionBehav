@@ -452,8 +452,63 @@ void CBehavMFCDlg::OnBnClickedCatch()
 
 void CBehavMFCDlg::OnBnClickedProcess()
 {
-	//**************************
-	//*****************experiment:edge
+	//addNoise();
+	expeEdge();
+
+
+
+	//ba4.funMain(MYPATH);
+
+	//ViBe_BGS v1;
+	//v1.script(MYPATHSAMPLE);
+	
+	////get frame info
+	//CString cstr;
+	//cstr.Format(_T("w-%d,h-%d"), frame->width, frame->height);
+	//MessageBox(cstr);
+	////获取对话框上的句柄 图片控件ID  
+	//CStatic *p = (CStatic *)GetDlgItem(IDC_Back);
+	////设置静态控件窗口风格为位图居中显示  
+	//p->MoveWindow(500,500,100,100);
+	//p->ModifyStyle(0xf, SS_BITMAP | SS_CENTERIMAGE);
+	////将图片设置到Picture控件上  
+	//p->SetBitmap(bitmap);
+	//int i = 10;
+	//CString str;
+	//str.Format(_T("this%s"),choose);
+	//MessageBox(str);
+	//MessageBox(choose);
+	//MessageBox(_T("No frame !"));
+	//IplImage *gray = 0, *edge = 0;
+	//gray = cvCreateImage(cvSize(IMAGE_WIDTH, IMAGE_HEIGHT), IPL_DEPTH_8U, 1);
+	//edge = cvCreateImage(cvSize(IMAGE_WIDTH, IMAGE_HEIGHT), IPL_DEPTH_8U, 1);
+	//cvCvtColor(TheImage, gray, CV_BGR2GRAY);
+	//cvCanny(gray, edge, 30, 100, 3);
+	//cvCvtColor(edge, TheImage, CV_GRAY2BGR);
+	//ShowImage(TheImage, IDC_ShowImg);            // 调用显示图片函数
+}
+//***************************
+//***********************my scripts
+//-----------add salt noise
+void CBehavMFCDlg::addNoise()
+{
+	Mat m1;
+	m1 = imread("MySrc/threePeople.jpg");
+	if (m1.channels() != 1)
+		cvtColor(m1, m1, CV_BGR2GRAY);
+	for (int k = 0; k < 100; k++)
+	{
+		int i = rand() % m1.cols;
+		int j = rand() % m1.rows;
+		m1.at<uchar>(j, i) = 255;
+	}
+	imwrite("MyOutput/SrcEdge/afterNoise.jpg", m1);
+	imshow("afterNoise", m1);
+}
+
+//---------------------------experiment edge
+void CBehavMFCDlg::expeEdge()
+{
 	Mat m1, mout, m2Roberts, m2Prewitt, m2Sobel, m2Laplacian, m2Kirsch, m2Canny;
 	double TRoberts, TPrewitt, TSobel, TLaplacian, TKirsch, TCanny;
 	m1 = imread(PATH_EDGE);
@@ -487,7 +542,7 @@ void CBehavMFCDlg::OnBnClickedProcess()
 	IplImage *mk1, *mk2, *mk3;
 	mk1 = cvLoadImage(PATH_EDGE);
 	mk2 = cvCreateImage(cvSize(mk1->width, mk1->height), IPL_DEPTH_8U, 1);
-	mk3 = cvCreateImage(cvSize(mk1->width, mk1->height), IPL_DEPTH_8U, 1);	
+	mk3 = cvCreateImage(cvSize(mk1->width, mk1->height), IPL_DEPTH_8U, 1);
 	TKirsch = static_cast<double>(getTickCount());
 	cvCvtColor(mk1, mk2, CV_BGR2GRAY);
 	myEdge.myKirsch(mk2, mk3);
@@ -502,9 +557,9 @@ void CBehavMFCDlg::OnBnClickedProcess()
 	imwrite("MyOutput/ExperimentEdge/aftLaplacian.jpg", m2Laplacian);
 	imwrite("MyOutput/ExperimentEdge/aftCanny.jpg", m2Canny);
 	imshow("ori", m1);
-	imshow("aftRoberts", m2Roberts);
-	imshow("aftPrewitt", m2Prewitt);
-	imshow("aftSobel", m2Sobel);
+	//imshow("aftRoberts", m2Roberts);
+	//imshow("aftPrewitt", m2Prewitt);
+	//imshow("aftSobel", m2Sobel);
 	imshow("aftLaplacian", m2Laplacian);
 	imshow("aftCanny", m2Canny);
 	cout << "Roberts:" << TRoberts << '\n'
@@ -514,41 +569,9 @@ void CBehavMFCDlg::OnBnClickedProcess()
 		<< "Kirsch:" << TKirsch << '\n'
 		<< "Canny:" << TCanny << '\n';
 	cout << "experiment:edge--------------done" << '\n';
-	//**************************************
-	//***************************************
-
-	//ba4.funMain(MYPATH);
-
-
-	//ViBe_BGS v1;
-	//v1.script(MYPATHSAMPLE);
-	
-	////get frame info
-	//CString cstr;
-	//cstr.Format(_T("w-%d,h-%d"), frame->width, frame->height);
-	//MessageBox(cstr);
-	////获取对话框上的句柄 图片控件ID  
-	//CStatic *p = (CStatic *)GetDlgItem(IDC_Back);
-	////设置静态控件窗口风格为位图居中显示  
-	//p->MoveWindow(500,500,100,100);
-	//p->ModifyStyle(0xf, SS_BITMAP | SS_CENTERIMAGE);
-	////将图片设置到Picture控件上  
-	//p->SetBitmap(bitmap);
-	//int i = 10;
-	//CString str;
-	//str.Format(_T("this%s"),choose);
-	//MessageBox(str);
-	//MessageBox(choose);
-	//MessageBox(_T("No frame !"));
-	//IplImage *gray = 0, *edge = 0;
-	//gray = cvCreateImage(cvSize(IMAGE_WIDTH, IMAGE_HEIGHT), IPL_DEPTH_8U, 1);
-	//edge = cvCreateImage(cvSize(IMAGE_WIDTH, IMAGE_HEIGHT), IPL_DEPTH_8U, 1);
-	//cvCvtColor(TheImage, gray, CV_BGR2GRAY);
-	//cvCanny(gray, edge, 30, 100, 3);
-	//cvCvtColor(edge, TheImage, CV_GRAY2BGR);
-	//ShowImage(TheImage, IDC_ShowImg);            // 调用显示图片函数
 }
-
+//***************************
+//****************************
 //**************************************************************************************************assistant moduels
 void CBehavMFCDlg::ShowImage(IplImage* img, UINT ID)
 {

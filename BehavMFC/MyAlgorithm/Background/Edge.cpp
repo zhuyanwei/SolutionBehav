@@ -27,11 +27,37 @@ Mat Edge::funMain(string ch, Mat min, Mat mout)
 	{
 		//-->sobel
 		Sobel(min, dstImage, -1, 1, 1);
+		//add thread
+		if (dstImage.channels() != 1)
+			cvtColor(dstImage, dstImage, CV_BGR2GRAY);
+		for (int i = 0; i < dstImage.rows; i++)
+		{
+			for (int j = 0; j < dstImage.cols; j++)
+			{
+				if (dstImage.at<uchar>(i, j) > 20)
+					dstImage.at<uchar>(i, j) = 255;
+				else
+					dstImage.at<uchar>(i, j) = 0;
+			}
+		}
 	}
 	else if (ch == "lap")
 	{
 		//-->Laplacian
 		Laplacian(min, dstImage, -1);
+		//add thread
+		if (dstImage.channels() != 1)
+			cvtColor(dstImage, dstImage, CV_BGR2GRAY);
+		for (int i = 0; i < dstImage.rows; i++)
+		{
+			for (int j = 0; j < dstImage.cols; j++)
+			{
+				if (dstImage.at<uchar>(i, j) > 20)
+					dstImage.at<uchar>(i, j) = 255;
+				else
+					dstImage.at<uchar>(i, j) = 0;
+			}
+		}
 	}
 	else if (ch == "can")
 	{
@@ -39,9 +65,9 @@ Mat Edge::funMain(string ch, Mat min, Mat mout)
 		if (min.channels() != 1)
 			cvtColor(min, min, CV_BGR2GRAY);
 		////blur
-		blur(min, min, Size(4, 4));
+		blur(min, min, Size(3, 3));
 		//canny
-		Canny(min, dstImage, 100, 250);
+		Canny(min, dstImage, 70, 150);
 	}
 	else
 	{
@@ -71,7 +97,12 @@ Mat Edge::myRoberts(Mat srcImage)
 				srcImage.at<uchar>(i, j + 1)) *
 				(srcImage.at<uchar>(i + 1, j) -
 				srcImage.at<uchar>(i, j + 1));
-			dstImage.at<uchar>(i, j) = (uchar)sqrt(t1 + t2);
+			//@j,add thread
+			//dstImage.at<uchar>(i, j) = (uchar)sqrt(t1 + t2);
+			if (sqrt(t1 + t2) > 50)
+				dstImage.at<uchar>(i, j) = 255;
+			else
+				dstImage.at<uchar>(i, j) = 0;
 		}
 	}
 	return dstImage;
@@ -79,7 +110,8 @@ Mat Edge::myRoberts(Mat srcImage)
 
 Mat Edge::myPrewitt(Mat imageP)
 {
-	cvtColor(imageP, imageP, CV_BGR2GRAY);
+	if (imageP.channels() != 1)
+		cvtColor(imageP, imageP, CV_BGR2GRAY);
 	float prewittx[9] =
 	{
 		-1, 0, 1,
@@ -109,7 +141,12 @@ Mat Edge::myPrewitt(Mat imageP)
 			tempx = dstx.at<uchar>(i, j);
 			tempy = dsty.at<uchar>(i, j);
 			temp = sqrt(tempx*tempx + tempy*tempy);
-			dst.at<uchar>(i, j) = temp;
+			//@j,add thread
+			//dst.at<uchar>(i, j) = temp;
+			if (temp > 150)
+				dst.at<uchar>(i, j) = 255;
+			else
+				dst.at<uchar>(i, j) = 0;
 		}
 	}
 	return dst;
@@ -151,20 +188,18 @@ int Edge::myKirsch(IplImage *src, IplImage *dst)
 			a = max(a, c);
 			a = max(a, d);
 
-			if(a>200)
-				pd[(y+1)*step+(x+1)]=255;
+			if(a > 250)
+				pd[(y+1)*step+(x+1)] = 255;
 			else 
-				pd[(y+1)*step+(x+1)]=0;
+				pd[(y+1)*step+(x+1)] = 0;
 
 			//pd[(y + 1)*step + (x + 1)] = a;
 		}
 	}
-
 	//double min_val = 0, max_val = 0;//取图并显示像中的最大最小像素值
 	//cvMinMaxLoc(dst, &min_val, &max_val);
-	////printf("max_val = %f\nmin_val = %f\n", max_val, min_val);
-
 	//cvNormalize(dst, dst, 0, 255, CV_MINMAX); //归一化处理
+	
 	cvSaveImage("MyOutput/ExperimentEdge/aftKirsch.jpg", dst);//把图像存入文件
 	cvShowImage("aftKirsch", dst);
 	return 1;

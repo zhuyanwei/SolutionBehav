@@ -89,4 +89,7 @@ private:
 	Edge myEdge;
 	BackAver4 ba4;
 	FlowLKImg flk;
+	//my scripts
+	void addNoise();
+	void expeEdge();
 };
