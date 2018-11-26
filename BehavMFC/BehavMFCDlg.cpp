@@ -452,9 +452,9 @@ void CBehavMFCDlg::OnBnClickedCatch()
 
 void CBehavMFCDlg::OnBnClickedProcess()
 {
-	//addNoise();
-	expeEdge();
-
+	Hog1 h1;
+	h1.funMain("MySrc/threePeople.jpg");
+	h1.funMain("MySrc/cut1.PNG");
 
 
 	//ba4.funMain(MYPATH);
@@ -489,7 +489,7 @@ void CBehavMFCDlg::OnBnClickedProcess()
 }
 //***************************
 //***********************my scripts
-//-----------add salt noise
+//-----------------------------------add salt noise
 void CBehavMFCDlg::addNoise()
 {
 	Mat m1;

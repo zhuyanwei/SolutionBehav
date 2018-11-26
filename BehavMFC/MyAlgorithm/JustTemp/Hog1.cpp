@@ -10,7 +10,7 @@ Hog1::~Hog1()
 
 int Hog1::funMain(string fileName)
 {
-	Mat src = imread("MySrc/cut2.PNG", 1);
+	Mat src = imread(fileName, 1);
 	vector<Rect> personSVM, personCasc, personListSVM, personListCacs;//检测结果矩形框向量
 	DWORD SVMTimeBegin, SVMTimeEnd, CascTimeBegin, CascTimeEnd;  //耗时统计	
 

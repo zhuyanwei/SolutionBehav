@@ -15,12 +15,13 @@
 #include "MyAlgorithm\Background\DanGao1.h"
 #include "MyAlgorithm\Background\HunGao1.h"
 #include "MyAlgorithm\Background\HunGao2.h"
-
 //count
 //violent
 #include "MyAlgorithm\Violent\FlowLKImg.h"
 //just temp
 #include "MyAlgorithm\JustTemp\Hog1.h"
+//hog
+//#include "MyAlgorithm\Hog\Sol1\Pedestrain.h"
 //***********************************************
 //timer
 #define TIMER_FPS 1
@@ -84,6 +85,7 @@ public:
 	CDC *pDC;
 	HDC hDC;
 	CWnd *pwnd;
+
 private:
 	//algorithm
 	Edge myEdge;
