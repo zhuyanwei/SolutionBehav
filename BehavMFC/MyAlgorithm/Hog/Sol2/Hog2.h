@@ -1,4 +1,5 @@
 //https://blog.csdn.net/liulina603/article/details/8289625
+#pragma once
 #include <opencv2/opencv.hpp>
 #include <opencv2/ml.hpp>  
 #include <iostream> 

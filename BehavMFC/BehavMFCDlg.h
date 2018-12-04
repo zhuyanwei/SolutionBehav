@@ -21,7 +21,7 @@
 //just temp
 #include "MyAlgorithm\JustTemp\Hog1.h"
 //hog
-//#include "MyAlgorithm\Hog\Sol1\Pedestrain.h"
+#include "MyAlgorithm\Hog\Sol3\Hog3.h"
 //***********************************************
 //timer
 #define TIMER_FPS 1

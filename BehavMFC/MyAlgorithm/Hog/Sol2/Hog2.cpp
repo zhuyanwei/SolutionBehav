@@ -10,13 +10,14 @@ Hog2::~Hog2()
 }
 int Hog2::funMain()
 {
-	int ImgWidht = 120;
-	int ImgHeight = 120;
-	vector<string> img_path;
-	vector<int> img_catg;
+	int ImgWidht = 64;
+	int ImgHeight = 128;
+	vector<string> img_path;//restore path
+	vector<int> img_catg;//restore first 5 1&0
 	int nLine = 0;
 	string buf;
-	ifstream svm_data("E:/apple/SVM_DATA.txt");
+	//ifstream svm_data("E:/apple/SVM_DATA.txt");
+	ifstream svm_data("SVM_DATA.txt");
 	unsigned long n;
 
 	while (svm_data)
@@ -72,7 +73,10 @@ int Hog2::funMain()
 		res_mat.at<float>(i, 0) = img_catg[i];
 		cout << " end processing " << img_path[i].c_str() << " " << img_catg[i] << endl;
 	}
-
+	///***********************cut 1
+	//cout << "done11\n";
+	//return 9;
+	//
 	CvSVM svm;
 	CvSVMParams param;
 	CvTermCriteria criteria;
@@ -93,11 +97,14 @@ int Hog2::funMain()
 	//☆☆☆☆☆☆☆☆☆(5)SVM学习☆☆☆☆☆☆☆☆☆☆☆☆         
 	svm.train(data_mat, res_mat, Mat(), Mat(), param);
 	//☆☆利用训练数据和确定的学习参数,进行SVM学习☆☆☆☆     
-	svm.save("E:/apple/SVM_DATA.xml");
-
+	svm.save("SVM_DATA.xml");
+////***************cut2
+//	cout << "iokj\n";
+//	return 98;
+//	//
 	//检测样本  
 	vector<string> img_tst_path;
-	ifstream img_tst("E:/apple/SVM_TEST.txt");
+	ifstream img_tst("SVM_TEST.txt");
 	while (img_tst)
 	{
 		if (getline(img_tst, buf))
@@ -109,13 +116,13 @@ int Hog2::funMain()
 
 	Mat test;
 	char line[512];
-	ofstream predict_txt("E:/apple/SVM_PREDICT.txt");
+	//ofstream predict_txt("SVM_PREDICT.txt");
 	for (string::size_type j = 0; j != img_tst_path.size(); j++)
 	{
 		test = imread(img_tst_path[j].c_str(), 1);//读入图像   
 		resize(test, trainImg, cv::Size(ImgWidht, ImgHeight), 0, 0, INTER_CUBIC);//要搞成同样的大小才可以检测到       
 		HOGDescriptor *hog = new HOGDescriptor(cvSize(ImgWidht, ImgHeight), cvSize(16, 16), cvSize(8, 8), cvSize(8, 8), 9);  //具体意思见参考文章1,2     
-		vector<float>descriptors;//结果数组     
+		vector<float> descriptors;//结果数组     
 		hog->compute(trainImg, descriptors, Size(1, 1), Size(0, 0)); //调用计算函数开始计算 
 		cout << "The Detection Result:" << endl;
 		cout << "HOG dims: " << descriptors.size() << endl;
@@ -128,12 +135,15 @@ int Hog2::funMain()
 		}
 
 		int ret = svm.predict(SVMtrainMat);
-		std::sprintf(line, "%s %d\r\n", img_tst_path[j].c_str(), ret);
-		printf("%s %d\r\n", img_tst_path[j].c_str(), ret);
-		getchar();
-		predict_txt << line;
+		cout << j <<"+++"<<ret<< '\n';
+		//std::sprintf(line, "%s %d\r\n", img_tst_path[j].c_str(), ret);
+		//printf("%s %d\r\n", img_tst_path[j].c_str(), ret);
+		//getchar();
+		//predict_txt << line;
 	}
-	predict_txt.close();
+	//predict_txt.close();
+	////*****************
+	cout << "final end\n";
 
 	return 0;
 }

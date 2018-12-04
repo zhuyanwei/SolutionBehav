@@ -1,0 +1,11 @@
+MySrc/HogT/1.jpg
+MySrc/HogT/2.jpg
+MySrc/HogT/3.jpg
+MySrc/HogT/4.jpg
+MySrc/HogT/5.jpg
+MySrc/HogT/6.jpg
+MySrc/HogT/7.jpg
+MySrc/HogT/8.jpg
+MySrc/HogT/9.jpg
+MySrc/HogT/10.jpg
+MySrc/HogT/11.jpg

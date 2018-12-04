@@ -452,11 +452,8 @@ void CBehavMFCDlg::OnBnClickedCatch()
 
 void CBehavMFCDlg::OnBnClickedProcess()
 {
-	Hog1 h1;
-	h1.funMain("MySrc/threePeople.jpg");
-	h1.funMain("MySrc/cut1.PNG");
-
-
+	Hog3 h3;
+	h3.funMain("MySrc/Hog/Test/4.jpg");
 	//ba4.funMain(MYPATH);
 
 	//ViBe_BGS v1;
