@@ -4,6 +4,10 @@
 //experiment:edge
 //#define PATH_EDGE "MySrc/threePeople.jpg"
 #define PATH_EDGE "MyOutput/ExperimentEdge/SrcEdge/afterNoise.jpg"
+//experiment:fore compare
+#define PATH_COM "MyOutput/ExperimentForeCom/one.avi"
+#define PATH_COM2 "MyOutput/ExperimentForeCom/one1025.avi"
+
 //***
 #define MYPATH "MySrc/ele_proc/one.avi"
 //#define MYPATH "MySrc/normal/one_two_three.avi"

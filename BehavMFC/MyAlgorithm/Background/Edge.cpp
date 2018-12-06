@@ -59,6 +59,16 @@ Mat Edge::funMain(string ch, Mat min, Mat mout)
 			}
 		}
 	}
+	else if (ch == "cancan")
+	{
+		//gray
+		if (min.channels() != 1)
+			cvtColor(min, min, CV_BGR2GRAY);
+		////blur
+		blur(min, min, Size(3, 3));
+		//canny
+		Canny(min, mout, 40, 80);
+	}
 	else if (ch == "can")
 	{
 		//gray

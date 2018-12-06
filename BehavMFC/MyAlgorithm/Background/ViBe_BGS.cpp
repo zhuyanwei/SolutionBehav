@@ -168,6 +168,7 @@ int ViBe_BGS::script(string fileName)
 	{
 		count++;
 		capture >> frame;
+		cout << count << '\n';
 		if (frame.empty())
 			continue;
 		if (frame.depth() != 1)

@@ -630,7 +630,22 @@ void CBehavMFCDlg::expeForeMy()
 //-------------------experiment:foreground compare
 void CBehavMFCDlg::expeForeCom()
 {
-
+	////avi.PATH_COM,frame 500
+	//DiffTwo d2;
+	//d2.funMain(PATH_COM);
+	//DiffThree2 d3;
+	//d3.script(PATH_COM);
+	//BackAver ba;
+	//ba.funMain(PATH_COM);
+	//DanGao1 dg1;
+	//dg1.funMain(MYPATHSAMPLE);
+	//HunGao1 hg1;
+	//hg1.funMain(PATH_COM2);
+	//ViBe_BGS v1;
+	//v1.script(PATH_COM2);
+	FlowColor fc2;
+	fc2.funMain(PATH_COM2);
+	//ba4.funMain(PATH_COM);
 }
 
 //***************************

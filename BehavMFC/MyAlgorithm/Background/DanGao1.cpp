@@ -87,9 +87,11 @@ int DanGao1::funMain(string fileName)
 			cvSet2D(frame_std, y, x, pixel_std);
 		}
 	}
-
+	int finalCount = 0;
 	while (cvWaitKey(CVWAIT) != 'q')//按ESC键退出，帧率33ms
 	{
+		cout << finalCount << '\n';
+		finalCount++;
 		frame = cvQueryFrame(capture);
 		//视频结束退出
 		if (!frame)

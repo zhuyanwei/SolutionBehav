@@ -10,6 +10,7 @@ BackAver4::~BackAver4()
 
 int BackAver4::funMain(string fileName)
 {
+	Mat myNull;
 	//open camera
 	CvCapture* capture;
 	if (fileName == "00")
@@ -64,7 +65,7 @@ int BackAver4::funMain(string fileName)
 			cvCvtColor(pic, frame, CV_BGR2GRAY);
 		//edge
 		cvCvtScale(frame, edgeIn);
-		e1.funMain("can", edgeIn, edgeOut);
+		e1.funMain("cancan", edgeIn, edgeOut);
 		//acculate
 		cvCvtScale(edgeOut, Iscratch, 1.0, 0);
 		cvAcc(Iscratch, IavgF);
@@ -87,6 +88,8 @@ int BackAver4::funMain(string fileName)
 	//do sub
 	while (true)
 	{
+		fnum++;
+		cout << fnum << '\n';
 		//get and gray
 		pic = cvQueryFrame(capture);
 		if (!pic) 
@@ -95,7 +98,7 @@ int BackAver4::funMain(string fileName)
 			cvCvtColor(pic, frame, CV_BGR2GRAY);
 		//edge
 		cvCvtScale(frame, edgeIn);
-		e1.funMain("can",edgeIn,edgeOut);
+		e1.funMain("cancan",edgeIn,edgeOut);
 		//do range
 		cvCvtScale(edgeOut,Iscratch);
 		cvInRange(Iscratch, IlowF, IhiF, Imask);
@@ -103,9 +106,9 @@ int BackAver4::funMain(string fileName)
 		////smooth open&close
 		//process();
 
-		//flk process
-		if (flkMat1.empty() == false && flkMat2.empty() == false)
-			flk.funMain(flkMat1, flkMat1);
+		////flk process
+		//if (flkMat1.empty() == false && flkMat2.empty() == false)
+		//	flk.funMain(flkMat1, flkMat1);
 		cvShowImage("mask", Imask);
 		cvShowImage("frame", frame);
 		if (cvWaitKey(CVWAIT) == 'q')
