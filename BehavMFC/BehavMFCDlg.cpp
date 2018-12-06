@@ -452,12 +452,11 @@ void CBehavMFCDlg::OnBnClickedCatch()
 
 void CBehavMFCDlg::OnBnClickedProcess()
 {
-	Hog3 h3;
-	h3.funMain("MySrc/Hog/Test/4.jpg");
+	expeForeCom();
+	//Hog3 h3;
+	//h3.funMain("MySrc/Hog/Test/4.jpg");
 	//ba4.funMain(MYPATH);
 
-	//ViBe_BGS v1;
-	//v1.script(MYPATHSAMPLE);
 	
 	////get frame info
 	//CString cstr;
@@ -567,6 +566,73 @@ void CBehavMFCDlg::expeEdge()
 		<< "Canny:" << TCanny << '\n';
 	cout << "experiment:edge--------------done" << '\n';
 }
+
+//-------------------experiment:my foreground
+void CBehavMFCDlg::expeForeMy()
+{
+	Mat m1, m1aft, m2, m2aft, mSub;
+	m1 = imread("MyOutput/ExperimentForeMy/MyForeUse/background.jpg");
+	m2 = imread("MyOutput/ExperimentForeMy/MyForeUse/p1.jpg");
+	//background
+	//gray
+	if (m1.channels() != 1)
+		cvtColor(m1, m1, CV_BGR2GRAY);
+	////blur
+	blur(m1, m1, Size(3, 3));
+	//canny
+	Canny(m1, m1aft, 70, 100);
+	imshow("background", m1);
+	imshow("backgroundEdge", m1aft);
+	//p1
+	//gray
+	if (m2.channels() != 1)
+		cvtColor(m2, m2, CV_BGR2GRAY);
+	////blur
+	blur(m2, m2, Size(3, 3));
+	//canny
+	Canny(m2, m2aft, 70, 150);
+	imshow("ori", m2);
+	imshow("oriEdge", m2aft);
+	//donging sub
+	subtract(m2aft, m1aft, mSub);
+	imshow("Sub", mSub);
+	//filters
+	//erode(mSub, mSub, getStructuringElement(MORPH_ELLIPSE, Size(2,2)));
+	//dilate(mSub, mSub, getStructuringElement(MORPH_ELLIPSE, Size(2, 2)));
+	//medianBlur(mSub, mSub, 3);
+	//ROI
+	Mat dst,dst1, dst2, mask1, mask2;
+	dst1 = Mat::zeros(mSub.size(), mSub.type());
+	dst2 = Mat::zeros(mSub.size(), mSub.type());
+	mask1 = Mat::zeros(mSub.size(), CV_8U);
+	mask2 = Mat::zeros(mSub.size(), CV_8U);
+	//rectangle(mSub, Rect(170, 60, 180, 330), Scalar(255));
+	//rectangle(mSub, Rect(30, 130, 200, 270), Scalar(255));
+	rectangle(mask1, Rect(170, 60, 180, 330), Scalar(255), -1);
+	rectangle(mask2, Rect(30, 130, 200, 270), Scalar(255), -1);
+	mSub.copyTo(dst1, mask1);
+	//imshow("mSubaft", dst1);
+	mSub.copyTo(dst2, mask2);
+	//imshow("mSubaft2", dst2);
+	bitwise_or(dst1,dst2,dst);
+	imshow("final", dst);
+
+	//output
+	imwrite("MyOutput/ExperimentForeMy/background.jpg", m1);
+	imwrite("MyOutput/ExperimentForeMy/backgroundEdge.jpg", m1aft);
+	imwrite("MyOutput/ExperimentForeMy/ori.jpg", m2);
+	imwrite("MyOutput/ExperimentForeMy/oriEdge.jpg", m2aft);
+	imwrite("MyOutput/ExperimentForeMy/Sub.jpg", mSub);
+	imwrite("MyOutput/ExperimentForeMy/final.jpg", dst);
+
+}
+
+//-------------------experiment:foreground compare
+void CBehavMFCDlg::expeForeCom()
+{
+
+}
+
 //***************************
 //****************************
 //**************************************************************************************************assistant moduels

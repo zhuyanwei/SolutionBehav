@@ -94,4 +94,6 @@ private:
 	//my scripts
 	void addNoise();
 	void expeEdge();
+	void expeForeMy();
+	void expeForeCom();
 };

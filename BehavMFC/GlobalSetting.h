@@ -3,7 +3,7 @@
 //**************************src path
 //experiment:edge
 //#define PATH_EDGE "MySrc/threePeople.jpg"
-#define PATH_EDGE "MyOutput/SrcEdge/afterNoise.jpg"
+#define PATH_EDGE "MyOutput/ExperimentEdge/SrcEdge/afterNoise.jpg"
 //***
 #define MYPATH "MySrc/ele_proc/one.avi"
 //#define MYPATH "MySrc/normal/one_two_three.avi"
