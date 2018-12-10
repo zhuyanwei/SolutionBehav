@@ -53,6 +53,9 @@ int DiffTwo::funMain(string fileName)
 	Mat morphologyKernel = getStructuringElement(MORPH_RECT, Size(3, 3), Point(-1, -1));
 	for (;;)
 	{
+		double TRoberts;
+		TRoberts = static_cast<double>(getTickCount());
+
 		//读取当前帧  
 		video >> currentBGRFrame;
 		//判断当前帧是否存在  
@@ -87,6 +90,11 @@ int DiffTwo::funMain(string fileName)
 			//形态学处理(开闭运算)  
 			//morphologyEx(segmentation,segmentation,MORPH_OPEN,morphologyKernel,Point(-1,-1),1,BORDER_REPLICATE);  
 			morphologyEx(segmentation, segmentation, MORPH_CLOSE, morphologyKernel, Point(-1, -1), 2, BORDER_REPLICATE);
+			//time
+			TRoberts = static_cast<double>(getTickCount()) - TRoberts;
+			TRoberts /= getTickFrequency();
+			cout << TRoberts << '\n';
+
 			//显示二值化图片  
 			imshow("Forground", segmentation);
 			////@J,sobel

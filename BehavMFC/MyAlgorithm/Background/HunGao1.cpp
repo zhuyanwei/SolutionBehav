@@ -73,6 +73,10 @@ int HunGao1::funMain(string fileName)
 	}
 
 	while (1){
+		//time part
+		double TRoberts;
+		TRoberts = static_cast<double>(getTickCount());
+
 		rank_ind = (int *)malloc(sizeof(int)*C);
 		cvCvtColor(mframe, current, CV_BGR2GRAY);
 		// calculate difference of pixel values from mean
@@ -181,6 +185,10 @@ int HunGao1::funMain(string fileName)
 		}
 
 		mframe = cvQueryFrame(capture);
+		TRoberts = static_cast<double>(getTickCount()) - TRoberts;
+		TRoberts /= getTickFrequency();
+		cout << TRoberts << '\n';
+
 		cvShowImage("fore", frg);
 		cvShowImage("back", test);
 		char s = cvWaitKey(CVWAIT);

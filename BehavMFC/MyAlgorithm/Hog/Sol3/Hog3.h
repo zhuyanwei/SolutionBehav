@@ -41,8 +41,10 @@ public:
 class Hog3
 {
 public:
+	vector<float> mySecDetector;
 	Hog3();
 	~Hog3();
 	int funMain(string filename);
+	int computeMyDetector();
 };
 

@@ -7,6 +7,7 @@
 #include <opencv2\opencv.hpp>
 #include <iostream>
 #include "../../GlobalSetting.h"
+#include "../Hog/Sol3/Hog3.h"
 #include "../Violent/FlowLKImg.h"
 #include "Edge.h"
 using namespace std;
@@ -30,6 +31,8 @@ private:
 	//algorithm
 	//edge
 	Edge e1;
+	//HOG
+	Hog3 hg3;
 	//flk
 	FlowLKImg flk;
 	Mat flkMat1, flkMat2;

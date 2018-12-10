@@ -123,6 +123,10 @@ int FlowColor::funMain(string fileName)
 
 	for (;;)
 	{
+		//time part
+		double TRoberts;
+		TRoberts = static_cast<double>(getTickCount());
+
 		double t = (double)cvGetTickCount();
 		cap >> frame;
 
@@ -141,6 +145,9 @@ int FlowColor::funMain(string fileName)
 		if (waitKey(30) == 'q')
 			break;
 		std::swap(prevgray, gray);
+		TRoberts = static_cast<double>(getTickCount()) - TRoberts;
+		TRoberts /= getTickFrequency();
+		cout << TRoberts << '\n';
 
 		t = (double)cvGetTickCount() - t;
 		cout << "cost time: " << t / ((double)cvGetTickFrequency()*1000.) << endl;

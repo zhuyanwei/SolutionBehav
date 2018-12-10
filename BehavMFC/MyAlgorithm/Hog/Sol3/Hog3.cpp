@@ -8,6 +8,61 @@ Hog3::~Hog3()
 {
 }
 
+int Hog3::computeMyDetector()
+{
+	MySVM svm;//SVM分类器
+	svm.load("MySrc/Hog/SVM_HOG.xml");//从XML文件读取训练好的SVM模型
+	int DescriptorDim = svm.get_var_count();//特征向量的维数，即HOG描述子的维数
+	int supportVectorNum = svm.get_support_vector_count();//支持向量的个数
+	//cout << "支持向量个数：" << supportVectorNum << endl;
+
+	Mat alphaMat = Mat::zeros(1, supportVectorNum, CV_32FC1);//alpha向量，长度等于支持向量个数
+	Mat supportVectorMat = Mat::zeros(supportVectorNum, DescriptorDim, CV_32FC1);//支持向量矩阵
+	Mat resultMat = Mat::zeros(1, DescriptorDim, CV_32FC1);//alpha向量乘以支持向量矩阵的结果
+
+	//将支持向量的数据复制到supportVectorMat矩阵中
+	for (int i = 0; i<supportVectorNum; i++)
+	{
+		const float * pSVData = svm.get_support_vector(i);//返回第i个支持向量的数据指针
+		for (int j = 0; j<DescriptorDim; j++)
+		{
+			//cout<<pData[j]<<" ";
+			supportVectorMat.at<float>(i, j) = pSVData[j];
+		}
+	}
+
+	//将alpha向量的数据复制到alphaMat中
+	double * pAlphaData = svm.get_alpha_vector();//返回SVM的决策函数中的alpha向量
+	for (int i = 0; i<supportVectorNum; i++)
+	{
+		alphaMat.at<float>(0, i) = pAlphaData[i];
+	}
+
+	//计算-(alphaMat * supportVectorMat),结果放到resultMat中
+	//gemm(alphaMat, supportVectorMat, -1, 0, 1, resultMat);//不知道为什么加负号？
+	resultMat = -1 * alphaMat * supportVectorMat;
+
+	//得到最终的setSVMDetector(const vector<float>& detector)参数中可用的检测子
+	//vector<float> myDetector;
+	//将resultMat中的数据复制到数组myDetector中
+	for (int i = 0; i<DescriptorDim; i++)
+	{
+		mySecDetector.push_back(resultMat.at<float>(0, i));
+	}
+	//最后添加偏移量rho，得到检测子
+	mySecDetector.push_back(svm.get_rho());
+	cout << "检测子维数：" << mySecDetector.size() << endl;
+	cout << "compute my detector done\n";
+	//设置HOGDescriptor的检测子
+	//HOGDescriptor myHOG(Size(64, 128), Size(16, 16), Size(8, 8), Size(8, 8), 9);
+	//HOGDescriptor myHOG;
+	//myHOG.setSVMDetector(myDetector);
+	//myHOG.setSVMDetector(HOGDescriptor::getDefaultPeopleDetector());
+
+
+	return 1;
+}
+
 int Hog3::funMain(string filename)
 {
 	//检测窗口(64,128),块尺寸(16,16),块步长(8,8),cell尺寸(8,8),直方图bin个数9
@@ -203,6 +258,7 @@ int Hog3::funMain(string filename)
 	myDetector.push_back(svm.get_rho());
 	cout << "检测子维数：" << myDetector.size() << endl;
 	//设置HOGDescriptor的检测子
+	//HOGDescriptor myHOG(Size(64, 128), Size(16, 16), Size(8, 8), Size(8, 8), 9);
 	HOGDescriptor myHOG;
 	myHOG.setSVMDetector(myDetector);
 	//myHOG.setSVMDetector(HOGDescriptor::getDefaultPeopleDetector());
@@ -216,12 +272,22 @@ int Hog3::funMain(string filename)
 
 
 	/**************读入图片进行HOG行人检测******************/
-	//Mat src = imread("00000.jpg");
-	//Mat src = imread("2007_000423.jpg");
+	//Mat src = imread("MySrc/Hog/Test/3.jpg");
 	Mat src = imread(filename);
+	//resize(src, src, Size(320, 240));
 	vector<Rect> found, found_filtered;//矩形框数组
 	cout << "------------step3.进行多尺度HOG人体检测" << endl;
-	myHOG.detectMultiScale(src, found, 0, Size(8, 8), Size(32, 32), 1.05, 2);//对图片进行多尺度行人检测
+	//time part
+	double TRoberts;
+	TRoberts = static_cast<double>(getTickCount());
+
+	//myHOG.detectMultiScale(src, found, 0, Size(8, 8), Size(32, 32), 1.05, 2);//对图片进行多尺度行人检测
+	myHOG.detectMultiScale(src, found, 0, Size(8, 8), Size(0, 0), 1.05, 2);//对图片进行多尺度行人检测
+	
+	TRoberts = static_cast<double>(getTickCount()) - TRoberts;
+	TRoberts /= getTickFrequency();
+	cout << TRoberts << '\n';
+
 	cout << "找到的矩形框个数：" << found.size() << endl;
 
 	//找出所有没有嵌套的矩形框r,并放入found_filtered中,如果有嵌套的话,则取外面最大的那个矩形框放入found_filtered中

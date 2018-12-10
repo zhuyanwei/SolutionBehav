@@ -8,7 +8,9 @@
 using namespace std;
 using namespace cv;
 
-const int MAX_CORNERS = 500;
+//const int MAX_CORNERS = 500;
+const int MAX_CORNERS = 100;
+
 
 class FlowLKImg
 {

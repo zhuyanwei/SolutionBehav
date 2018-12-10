@@ -452,11 +452,12 @@ void CBehavMFCDlg::OnBnClickedCatch()
 
 void CBehavMFCDlg::OnBnClickedProcess()
 {
-	expeForeCom();
 	//Hog3 h3;
-	//h3.funMain("MySrc/Hog/Test/4.jpg");
-	//ba4.funMain(MYPATH);
+	//h3.funMain("MySrc/Hog/Test/3.jpg");
 
+	expeForeCom();
+	//expeFlow();
+	//ba4.funMain(PATH_COM);
 	
 	////get frame info
 	//CString cstr;
@@ -567,6 +568,25 @@ void CBehavMFCDlg::expeEdge()
 	cout << "experiment:edge--------------done" << '\n';
 }
 
+//--------------some normal exercises
+void CBehavMFCDlg::hogPic()
+{
+	//Hog3 h3;
+	//h3.funMain("MySrc/Hog/Test/3.jpg");
+
+	Mat m1, m1aft, m2, m2aft;
+	m1 = imread("MySrc/Hog/process/3.jpg");
+	m2 = imread("MySrc/Hog/process/5.PNG");
+	rectangle(m1, Rect(150, 60, 180, 300), Scalar(0, 255, 0), 3);
+	rectangle(m1, Rect(50, 120, 190, 250), Scalar(0, 255, 0), 3);
+	rectangle(m2, Rect(10, 190, 290, 260), Scalar(0, 255, 0), 3);
+
+	imshow("m1aft", m1);
+	imwrite("MySrc/Hog/process/m1aft.jpg", m1);
+	imshow("m2aft", m2);
+	imwrite("MySrc/Hog/process/m2aft.jpg", m2);
+}
+
 //-------------------experiment:my foreground
 void CBehavMFCDlg::expeForeMy()
 {
@@ -630,6 +650,14 @@ void CBehavMFCDlg::expeForeMy()
 //-------------------experiment:foreground compare
 void CBehavMFCDlg::expeForeCom()
 {
+	////time part
+	//double TRoberts;
+	//TRoberts = static_cast<double>(getTickCount());
+	//m2Roberts = myEdge.myRoberts(m1);
+	//TRoberts = static_cast<double>(getTickCount()) - TRoberts;
+	//TRoberts /= getTickFrequency();
+	//cout << TRoberts << '\n';
+
 	////avi.PATH_COM,frame 500
 	//DiffTwo d2;
 	//d2.funMain(PATH_COM);
@@ -638,14 +666,23 @@ void CBehavMFCDlg::expeForeCom()
 	//BackAver ba;
 	//ba.funMain(PATH_COM);
 	//DanGao1 dg1;
-	//dg1.funMain(MYPATHSAMPLE);
+	//dg1.funMain(PATH_COM2);
 	//HunGao1 hg1;
 	//hg1.funMain(PATH_COM2);
 	//ViBe_BGS v1;
 	//v1.script(PATH_COM2);
-	FlowColor fc2;
-	fc2.funMain(PATH_COM2);
-	//ba4.funMain(PATH_COM);
+	//FlowColor fc2;
+	//fc2.funMain(PATH_COM2);
+	ba4.funMain(PATH_COM);
+}
+
+//-------------------experiment:flow compare
+void CBehavMFCDlg::expeFlow()
+{
+	Mat m1, m2;
+	m1 = imread("MyOutput/ExperimentFlow/f1.jpg");
+	m2 = imread("MyOutput/ExperimentFlow/f2.jpg");
+	flk.funMain(m1,m2);
 }
 
 //***************************

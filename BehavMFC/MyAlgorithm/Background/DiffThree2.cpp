@@ -30,6 +30,9 @@ int DiffThree2::script(string fileName)
 	int save = 0;
 	while (true)
 	{
+		double TRoberts;
+		TRoberts = static_cast<double>(getTickCount());
+
 		videoCap >> frameNow;
 		if (frameNow.empty() || waitKey(CVWAIT) == 'q')
 		//if (frameNow.empty() || waitKey(videoPause) == 'q')
@@ -50,6 +53,11 @@ int DiffThree2::script(string fileName)
 		bitwise_and(Det1, Det2, frameDet);
 		framePrePre = framePre;
 		framePre = frameNow;
+		//time
+		TRoberts = static_cast<double>(getTickCount()) - TRoberts;
+		TRoberts /= getTickFrequency();
+		cout << TRoberts << '\n';
+
 		imshow("Video", frameNow);
 		imshow("Detection", frameDet);
 	}

@@ -7,6 +7,8 @@
 //experiment:fore compare
 #define PATH_COM "MyOutput/ExperimentForeCom/one.avi"
 #define PATH_COM2 "MyOutput/ExperimentForeCom/one1025.avi"
+//experiment:flow
+#define PATH_FLOW "MyOutput/ExperimentFlow/"
 
 //***
 #define MYPATH "MySrc/ele_proc/one.avi"

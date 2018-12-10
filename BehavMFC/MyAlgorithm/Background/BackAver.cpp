@@ -77,8 +77,16 @@ int BackAver::funMain(string fileName)
 		}
 		else
 		{
+			double TRoberts;
+			TRoberts = static_cast<double>(getTickCount());
+
 			backgroundDiff(rawImage);
 			process();
+
+			TRoberts = static_cast<double>(getTickCount()) - TRoberts;
+			TRoberts /= getTickFrequency();
+			cout << TRoberts << '\n';
+
 		}
 		
 		cvShowImage("mask", Imask);

@@ -51,6 +51,11 @@ int BackAver4::funMain(string fileName)
 	//edge part
 	IplImage *edgeIn = cvCreateImage(img_sz, 8, 1);
 	IplImage *edgeOut = cvCreateImage(img_sz, 8, 1);
+	//hog before process
+	hg3.computeMyDetector();
+	HOGDescriptor myHOG(Size(64, 128), Size(16, 16), Size(8, 8), Size(8, 8), 9);
+	myHOG.setSVMDetector(hg3.mySecDetector);
+
 	//numbers
 	int fnum = 1, Icount = NUM_AVER;
 	cvZero(IavgF); cvZero(Iscratch); cvZero(IpreF); cvZero(Iscratch2); cvZero(IdiffF);
@@ -85,11 +90,15 @@ int BackAver4::funMain(string fileName)
 	cvSub(IavgF, Iscratch, IlowF);
 	//cvShowImage("Background", IavgF);
 	cout << "background done" << '\n';
-	//do sub
+	//do sub --------------main part  
 	while (true)
 	{
 		fnum++;
 		cout << fnum << '\n';
+		//time part
+		double TRoberts;
+		TRoberts = static_cast<double>(getTickCount());
+
 		//get and gray
 		pic = cvQueryFrame(capture);
 		if (!pic) 
@@ -105,10 +114,25 @@ int BackAver4::funMain(string fileName)
 		cvSubRS(Imask, cvScalar(255), Imask);
 		////smooth open&close
 		//process();
+		////hog part
+		//vector<Rect> found, found_filtered;//¾ØÐÎ¿òÊý×é
+		//Mat ff1 = Mat(pic);
+		//Mat ff2;
+		//resize(ff1, ff2, Size(320, 240));
+		//myHOG.detectMultiScale(ff2, found, 0, Size(8, 8), Size(0, 0), 1.05, 2);
+		
+		//time
+		TRoberts = static_cast<double>(getTickCount()) - TRoberts;
+		TRoberts /= getTickFrequency();
+		//cout << TRoberts << '\n';
 
-		////flk process
-		//if (flkMat1.empty() == false && flkMat2.empty() == false)
-		//	flk.funMain(flkMat1, flkMat1);
+		//flk process
+		flkMat1 = flkMat2.clone();
+		flkMat2 = Mat(Imask);
+		if (flkMat1.empty() == false && flkMat2.empty() == false)
+			flk.funMain(flkMat1, flkMat2);
+		else
+			cout << "empty flk\n";
 		cvShowImage("mask", Imask);
 		cvShowImage("frame", frame);
 		if (cvWaitKey(CVWAIT) == 'q')

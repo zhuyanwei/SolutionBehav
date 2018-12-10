@@ -21,7 +21,7 @@ int FlowLKImg::funMain(Mat mat1, Mat mat2)
 
 	//@J interface,mat to iplimage
 	out_lkValue = 0.0;
-	mat2.copyTo(mat3);
+	mat1.copyTo(mat3);
 	if (mat1.channels() != 1)
 		cvtColor(mat1, mat1, CV_BGR2GRAY);
 	if (mat2.channels() != 1)
@@ -30,6 +30,7 @@ int FlowLKImg::funMain(Mat mat1, Mat mat2)
 	imgB = &IplImage(mat2);
 	img_sz = cvGetSize(imgA);
 	//show on the second original pic
+	//open the first
 	imgC = &IplImage(mat3);
 
 	int win_size = 10;//´°¿Ú³ß´ç
@@ -96,7 +97,11 @@ int FlowLKImg::funMain(Mat mat1, Mat mat2)
 			continue;
 		}
 		 //printf("Got it/n");
-		out_lkValue += abs(cornersA[i].x - cornersB[i].x) + abs(cornersA[i].y - cornersB[i].y);
+		//get rid too big lines
+		float lkValueT = abs(cornersA[i].x - cornersB[i].x) + abs(cornersA[i].y - cornersB[i].y);
+		if (lkValueT > 100 || cornersA[i].x<50)
+			continue;
+		out_lkValue += lkValueT;
 		CvPoint p0 = cvPoint(cvRound(cornersA[i].x), cvRound(cornersA[i].y));
 		CvPoint p1 = cvPoint(cvRound(cornersB[i].x), cvRound(cornersB[i].y));
 		//cvLine(imgC, p0, p1, CV_RGB(255, 0, 0), 2);

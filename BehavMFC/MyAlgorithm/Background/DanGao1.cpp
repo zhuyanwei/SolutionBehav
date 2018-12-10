@@ -92,6 +92,9 @@ int DanGao1::funMain(string fileName)
 	{
 		cout << finalCount << '\n';
 		finalCount++;
+		double TRoberts;
+		TRoberts = static_cast<double>(getTickCount());
+
 		frame = cvQueryFrame(capture);
 		//视频结束退出
 		if (!frame)
@@ -145,6 +148,10 @@ int DanGao1::funMain(string fileName)
 				}
 			}
 		}
+		TRoberts = static_cast<double>(getTickCount()) - TRoberts;
+		TRoberts /= getTickFrequency();
+		cout << TRoberts << '\n';
+
 		//显示结果
 		frame_u->origin = 1;
 		frame_u->origin = 1;
